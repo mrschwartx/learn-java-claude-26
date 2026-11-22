@@ -1,0 +1,15 @@
+--- CARA A: javac + java
+$ ls
+HelloWorld.java
+hasil-cara-A.txt
+$ javac HelloWorld.java
+$ ls -l
+total 12
+-rw-r--r-- 1 root root 587  HelloWorld.class
+-rw-r--r-- 1 root root 513  HelloWorld.java
+-rw-r--r-- 1 root root  95  hasil-cara-A.txt
+$ java HelloWorld
+Nama        : Nama Anda
+Tahun lahir : 2000
+$ xxd HelloWorld.class | head -1   # magic number 0xCAFEBABE
+00000000: cafe babe 0000 0041 0027 0a00 0200 0307  .......A.'......

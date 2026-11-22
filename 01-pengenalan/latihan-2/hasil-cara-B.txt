@@ -1,0 +1,12 @@
+--- CARA B: java HelloWorld.java (source-launcher, Java 11+)
+$ ls
+HelloWorld.java
+hasil-cara-A.txt
+hasil-cara-B.txt
+$ java HelloWorld.java
+Nama        : Nama Anda
+Tahun lahir : 2000
+$ ls     # setelah dijalankan: tidak ada .class baru
+HelloWorld.java
+hasil-cara-A.txt
+hasil-cara-B.txt

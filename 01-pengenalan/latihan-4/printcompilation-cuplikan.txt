@@ -1,0 +1,6 @@
+962 1298 %     3       WarmUp::kerja @ 4 (36 bytes)
+970 1299       3       WarmUp::kerja (36 bytes)
+1086 1300 %     4       WarmUp::kerja @ 4 (36 bytes)
+1089 1298 %     3       WarmUp::kerja @ 4 (36 bytes)   made not entrant
+1099 1331       4       WarmUp::kerja (36 bytes)
+1100 1299       3       WarmUp::kerja (36 bytes)   made not entrant

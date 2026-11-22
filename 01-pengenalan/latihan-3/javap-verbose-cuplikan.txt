@@ -1,0 +1,15 @@
+
+$ javap -v HelloWorld   (cuplikan: versi class file + constant pool)
+  minor version: 0
+  major version: 65
+Constant pool:
+   #1 = Methodref          #2.#3          // java/lang/Object."<init>":()V
+   #2 = Class              #4             // java/lang/Object
+   #7 = Fieldref           #8.#9          // java/lang/System.out:Ljava/io/PrintStream;
+   #8 = Class              #10            // java/lang/System
+  #13 = Class              #14            // HelloWorld
+  #15 = String             #16            // Nama        : Nama Anda
+  #17 = Methodref          #18.#19        // java/io/PrintStream.println:(Ljava/lang/String;)V
+  #18 = Class              #20            // java/io/PrintStream
+  #23 = String             #24            // Tahun lahir : 2000
+  #28 = String             #29            // Nama Anda
