@@ -1,0 +1,11 @@
+Sebelum tukar: p=1, q=2
+  di dalam tukar: a=2, b=1
+Setelah tukar: p=1, q=2   <- tidak tertukar
+
+Setelah tambahkan: Halo Dunia   <- isi object berubah
+  di dalam ganti: sb=Baru
+Setelah ganti    : Halo Dunia   <- tidak berubah
+
+Setelah tukarReferensi: x=X, y=Y   <- tidak tertukar
+
+Object sama dengan milik pemanggil? true

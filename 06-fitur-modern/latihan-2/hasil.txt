@@ -1,0 +1,13 @@
+Mahasiswa[nim=2301001, nama=Andi, ipk=3.75]
+Mahasiswa[nim=2301002, nama=Budi, ipk=0.0]
+a.nama() = Andi, a.ipk() = 3.75
+a.equals(a2)        : true
+a == a2             : false
+hashCode sama       : true
+set.contains(a2)    : true
+ipk 4.0   -> diterima
+ipk 0.0   -> diterima
+ipk 4.01  -> ditolak: ipk harus 0..4, bukan 4.01
+ipk -0.1  -> ditolak: ipk harus 0..4, bukan -0.1
+ipk NaN   -> ditolak: ipk harus 0..4, bukan NaN
+Mahasiswa[nim=2301009, nama=Citra, ipk=3.5]

@@ -1,0 +1,16 @@
+Array         : [42, 17, 93, 8, 56, 12, 71, 30, 64, 25]
+  tanpa sort  : 71
+  dengan sort : 71
+  array asli tetap: true
+Array         : [42, 17, 93, 8, 56, 93, 71, 30, 64, 25]
+  tanpa sort  : 71
+  dengan sort : 71
+  array asli tetap: true
+Array         : [-5, -12, -3, -40, -3, -9, -20, -7, -15, -8]
+  tanpa sort  : -5
+  dengan sort : -5
+  array asli tetap: true
+Array         : [7, 7, 7, 7, 7, 7, 7, 7, 7, 7]
+  tanpa sort  : null
+  dengan sort : null
+  array asli tetap: true

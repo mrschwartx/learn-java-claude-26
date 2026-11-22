@@ -1,0 +1,6 @@
+$ sed -i "s/public String getNama()/String getNama()/" Produk.java     # public -> package-private
+$ javac -d out2 src/com/contoh/toko/model/Produk.java src/com/contoh/toko/app/App.java
+src/com/contoh/toko/app/App.java:8: error: getNama() is not public in Produk; cannot be accessed from outside package
+        System.out.println(p.getNama() + " = Rp" + p.getHarga());
+                            ^
+1 error

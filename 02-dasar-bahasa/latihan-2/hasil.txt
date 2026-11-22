@@ -1,0 +1,6 @@
+(byte) 130 = -126
+double d = 7 / 2  ->  3.0
+double d2 = 7 / 2.0 -> 3.5
+130 dalam biner (32 bit): 00000000000000000000000010000010
+8 bit terbawah          : 10000010
+tafsir signed 8 bit     : -126

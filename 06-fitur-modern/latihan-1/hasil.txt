@@ -1,0 +1,17 @@
+WARN.lebihPentingDari(INFO)  : true
+DEBUG.lebihPentingDari(INFO) : false
+INFO.lebihPentingDari(INFO)  : false
+  DEBUG ordinal=0 bobot=10
+  INFO ordinal=1 bobot=20
+  WARN ordinal=2 bobot=30
+  ERROR ordinal=3 bobot=40
+
+Log (20 entri): [WARN, DEBUG, WARN, DEBUG, INFO, ERROR, INFO, WARN, WARN, DEBUG, ERROR, INFO, INFO, INFO, INFO, WARN, INFO, ERROR, ERROR, ERROR]
+Hasil hitung  : {DEBUG=3, INFO=7, WARN=5, ERROR=5}   (urut sesuai deklarasi enum)
+Dengan nol    : {DEBUG=3, INFO=7, WARN=5, ERROR=5}
+Jumlah        : 20
+
+5 entri pertama: [WARN, DEBUG, WARN, DEBUG, INFO]
+  tanpa nilai awal : {DEBUG=2, INFO=1, WARN=2}   (ERROR tidak muncul)
+  getOrDefault     : ERROR=0
+Entri lebih penting dari INFO: 10

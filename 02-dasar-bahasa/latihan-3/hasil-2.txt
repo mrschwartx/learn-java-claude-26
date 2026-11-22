@@ -1,0 +1,4 @@
+Panjang: Lebar  : 
+Luas     = 13.75
+Keliling = 16.00
+Diagonal = 6.04

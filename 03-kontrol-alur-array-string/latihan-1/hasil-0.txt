@@ -1,0 +1,1 @@
+Masukkan sebuah bilangan bulat: 0 adalah bilangan genap, nol, kelipatan 5

@@ -1,0 +1,3 @@
+Mahasiswa{nim=2301001, nama=Andi, ipk=3.75}
+Mahasiswa{nim=2301002, nama=Budi, ipk=0.00}
+Mahasiswa{nim=2301003, nama=Citra, ipk=3.92}

@@ -1,0 +1,11 @@
+valid        -> []
+nama pendek  -> [nama: panjang harus 2..20, bukan 1]
+nama panjang -> [nama: panjang harus 2..20, bukan 30]
+sandi pendek -> [sandi: panjang harus 8..64, bukan 3]
+nama null    -> [nama: wajib diisi]
+semua salah  -> [nama: wajib diisi, nama: panjang harus 2..20, bukan 0, email: email harus ada, sandi: panjang harus 8..64, bukan 1]
+
+== Apa yang terbaca lewat reflection? ==
+@UjiRuntime : @UjiRuntime()
+@UjiClass   : null
+@UjiSource  : null

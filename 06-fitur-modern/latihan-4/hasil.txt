@@ -1,0 +1,8 @@
+null             -> kosong (null)
+-5               -> bilangan negatif -5
+0                -> bilangan 0
+42               -> bilangan 42
+[1, 2, 3]        -> list dengan 3 elemen
+[]               -> list dengan 0 elemen
+teks             -> objek lain: teks
+3.14             -> objek lain: 3.14

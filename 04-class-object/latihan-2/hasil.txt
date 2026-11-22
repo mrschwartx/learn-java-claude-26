@@ -1,0 +1,5 @@
+Sebelum membuat object : 0
+Setelah dua object     : 2
+Setelah tiga object    : 3
+Dibaca lewat object a  : 3  (diperbolehkan, tetapi membingungkan; pakai NamaClass.)
+Andi, Budi, Citra

@@ -1,0 +1,4 @@
+ContohError.java:6: error: non-static variable nama cannot be referenced from a static context
+        return nama;     // method static tidak punya 'this', jadi tidak tahu 'nama' milik object yang mana
+               ^
+1 error

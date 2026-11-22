@@ -1,0 +1,1 @@
+Masukkan sebuah bilangan bulat: -7 adalah bilangan ganjil, negatif, bukan kelipatan 5

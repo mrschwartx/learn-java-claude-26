@@ -1,0 +1,1 @@
+Masukkan sebuah bilangan bulat: -8 adalah bilangan genap, negatif, bukan kelipatan 5

@@ -1,0 +1,3 @@
+OK: selesai
+GAGAL: timeout
+MENUNGGU: antrian ke-3

@@ -1,0 +1,14 @@
+hitungVokal("Belajar Java")           = 5
+hitungVokal("Programming")            = 3
+hitungVokal("AIUEO aiueo")            = 10
+hitungVokal("")                       = 0
+balik("Belajar Java")                 = avaJ rajaleB
+balik("")                             = ""
+balik("a")                            = a
+balik(balik("Halo")).equals("Halo")  = true
+
+Menyambung 1 karakter sebanyak 20000 kali:
+  dengan +             : sekitar 200,010,000 karakter disalin  (~ n^2 / 2)
+  dengan StringBuilder : sekitar 20,000 karakter ditulis  (~ n)
+  panjang hasil sama   : true
+  [WAKTU, bervariasi]  : + = 83 ms, StringBuilder = 0 ms

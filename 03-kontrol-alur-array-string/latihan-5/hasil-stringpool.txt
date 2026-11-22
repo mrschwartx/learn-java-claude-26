@@ -1,0 +1,8 @@
+new String("a") == "a"      : false
+new String("a").equals("a") : true
+"a" == "a" (dua literal)    : true
+baru.intern() == "a"        : true
+
+(depan + "va") == "java"     : false
+(depan + "va").equals("java"): true
+(final depan + "va") == "java": true

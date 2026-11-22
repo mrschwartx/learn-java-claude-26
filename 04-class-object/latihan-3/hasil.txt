@@ -1,0 +1,15 @@
+-- main dimulai (class Contoh belum dimuat) --
+-- membuat object ke-1 --
+inisialisasi static field
+static block
+inisialisasi instance field
+instance block
+constructor
+-- membuat object ke-2 --
+inisialisasi instance field
+instance block
+constructor
+-- membuat object ke-3 --
+inisialisasi instance field
+instance block
+constructor

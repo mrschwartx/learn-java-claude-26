@@ -1,0 +1,14 @@
+[double] 0.1 x 10      = 0.9999999999999999
+[double] total == 1.0 ? false
+[BigDecimal] 0.1 x 10  = 1.0
+[BigDecimal] sama dengan 1.0 ? true
+
+new BigDecimal(0.1)   = 0.1000000000000000055511151231257827021181583404541015625
+new BigDecimal("0.1") = 0.1
+BigDecimal.valueOf(0.1) = 0.1   (alternatif aman bila sumbernya double)
+
+1000 x 0.1 pakai double     = 99.9999999999986
+1000 x 0.1 pakai BigDecimal = 100.0
+
+new BigDecimal("1.0").equals(new BigDecimal("1.00"))    = false
+new BigDecimal("1.0").compareTo(new BigDecimal("1.00")) = 0

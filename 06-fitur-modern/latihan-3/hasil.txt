@@ -1,0 +1,2 @@
+OK: 12 baris dimuat
+GAGAL: koneksi terputus

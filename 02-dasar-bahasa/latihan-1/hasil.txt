@@ -1,0 +1,22 @@
+== Nilai variabel ==
+byte    b = 100
+short   s = 30000
+int     i = 2000000000
+long    l = 9000000000
+float   f = 3.14159
+double  d = 2.718281828459045
+char    c = J  (kode Unicode 74)
+boolean z = true
+
+== Rentang tipe numerik (konstanta wrapper) ==
+byte   : -128 .. 127
+short  : -32768 .. 32767
+int    : -2147483648 .. 2147483647
+long   : -9223372036854775808 .. 9223372036854775807
+float  : -3.4028235E38 .. 3.4028235E38  (nilai positif terkecil 1.4E-45)
+double : -1.7976931348623157E308 .. 1.7976931348623157E308  (nilai positif terkecil 4.9E-324)
+char   : 0 .. 65535  (tanpa tanda, 16 bit)
+boolean: tidak punya rentang numerik, hanya true / false
+
+== Ukuran dalam bit (konstanta SIZE) ==
+byte=8 short=16 int=32 long=64 float=32 double=64 char=16

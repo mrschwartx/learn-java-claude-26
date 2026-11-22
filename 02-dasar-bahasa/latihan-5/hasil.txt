@@ -1,0 +1,9 @@
+nilai       (lokal, membayangi field) = 99
+this.nilai  (field yang asli)         = 10
+Scope.jumlahObjek (static)            = 2
+
+a.nilai = 500, b.nilai = 10   (instance: terpisah per object)
+jumlahObjek = 2                  (static: dipakai bersama)
+
+di dalam if : y = 20
+blok selesai: y dan i sudah tidak bisa diakses

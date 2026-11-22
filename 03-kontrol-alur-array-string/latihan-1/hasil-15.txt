@@ -1,0 +1,1 @@
+Masukkan sebuah bilangan bulat: 15 adalah bilangan ganjil, positif, kelipatan 5

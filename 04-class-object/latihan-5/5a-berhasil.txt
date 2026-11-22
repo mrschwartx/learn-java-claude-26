@@ -1,0 +1,7 @@
+$ javac -d out src/com/contoh/toko/model/Produk.java src/com/contoh/toko/app/App.java
+$ java -cp out com.contoh.toko.app.App
+Kopi = Rp25000
+
+$ find out -name "*.class"
+out/com/contoh/toko/app/App.class
+out/com/contoh/toko/model/Produk.class
