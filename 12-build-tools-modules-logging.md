@@ -12,12 +12,16 @@
   - [12.5 Maven vs Gradle vs Bazel](#125-maven-vs-gradle-vs-bazel)
   - [12.6 Java Modules (JPMS)](#126-java-modules-jpms)
   - [12.7 Logging](#127-logging)
+  - [12.8 Logback, Log4j2, dan TinyLog Lebih Dekat](#128-logback-log4j2-dan-tinylog-lebih-dekat)
 - [Praktik](#praktik)
   - [Project Maven Minimal dengan SLF4J + Logback + JUnit](#project-maven-minimal-dengan-slf4j--logback--junit)
   - [Padanan Gradle (Kotlin DSL)](#padanan-gradle-kotlin-dsl)
   - [Padanan Bazel (Konseptual)](#padanan-bazel-konseptual)
+  - [Bazel: Dependency Eksternal dan Test](#bazel-dependency-eksternal-dan-test)
   - [Java Modules: Dua Modul dengan Enkapsulasi Kuat](#java-modules-dua-modul-dengan-enkapsulasi-kuat)
   - [Logging Bawaan JDK (JUL) — Tanpa Dependency](#logging-bawaan-jdk-jul--tanpa-dependency)
+  - [Log4j2 sebagai Backend SLF4J (Mengganti Logback)](#log4j2-sebagai-backend-slf4j-mengganti-logback)
+  - [TinyLog: Konfigurasi `tinylog.properties`](#tinylog-konfigurasi-tinylogproperties)
 - [Latihan](#latihan)
 
 ---
@@ -109,6 +113,19 @@ Perintah umum: `./gradlew build`, `./gradlew test`, `./gradlew run`, `./gradlew 
 - Versi modern memakai file **`MODULE.bazel`** (sistem **Bzlmod**) untuk mendeklarasikan dependency eksternal, menggantikan `WORKSPACE` lama; dependency Maven biasanya lewat `rules_jvm_external`.
 - Kurva belajar **curam** dan integrasi IDE tidak semulus Maven/Gradle — dipilih terutama oleh organisasi besar dengan monorepo multi-bahasa.
 
+**Konsep inti Bazel** yang perlu dipahami sebelum menulis `BUILD`:
+
+| Konsep | Arti |
+|---|---|
+| **Module / workspace** | Akar proyek, ditandai `MODULE.bazel`; dependency eksternal dideklarasikan di sini |
+| **Package** | Folder yang berisi file `BUILD` |
+| **Target** | Satu unit build di dalam package, misalnya `java_library(name = "app_lib")` |
+| **Label** | Alamat unik target: `//path/ke/package:nama` (dari root), `:nama` (package yang sama), `@maven//:org_slf4j_slf4j_api` (repositori eksternal) |
+| **Dependency graph** | Bazel membangun graf antar-target sehingga **hanya target yang terdampak perubahan** yang dibangun ulang |
+| **Visibility** | Aturan target mana yang boleh bergantung pada target lain — membantu menjaga arsitektur monorepo |
+
+Perintah yang paling sering dipakai: `bazel build //...` (bangun semua), `bazel test //...` (jalankan semua test), `bazel run //:app`, dan `bazel query 'deps(//:app)'` untuk melihat graf dependency sebuah target.
+
 ### 12.5 Maven vs Gradle vs Bazel
 
 | | **Maven** | **Gradle** | **Bazel** |
@@ -183,6 +200,61 @@ Pola yang disarankan: **kode memakai SLF4J (API) saja**, dan satu backend dipili
 - Gunakan **MDC** (*Mapped Diagnostic Context*) untuk menempelkan konteks seperti `requestId` pada setiap baris log satu request — sangat berguna di sistem terdistribusi.
 - Di lingkungan container/cloud, pertimbangkan **log terstruktur (JSON)** ke stdout agar mudah dikumpulkan dan dicari oleh stack seperti Elasticsearch (course Elasticsearch) lewat agen log.
 - Satu pelajaran keamanan: kerentanan **Log4Shell (CVE-2021-44228)** pada Log4j 2 menunjukkan bahwa library logging pun harus **selalu diperbarui** dan dependency dipantau.
+
+### 12.8 Logback, Log4j2, dan TinyLog Lebih Dekat
+
+Tabel di 12.7 menjelaskan *peran* tiap komponen. Bagian ini membahas *cara kerja dan konfigurasi* tiga backend utama agar Anda bisa memilih dan memakainya dengan percaya diri. Ingat: kode aplikasi tetap memakai **SLF4J**; yang berbeda hanya dependency dan file konfigurasinya.
+
+#### Logback
+
+- Konfigurasi di `logback.xml` (atau `logback-spring.xml` di Spring Boot agar bisa memakai `<springProfile>`). Contoh lengkapnya ada di bagian Praktik pertama modul ini.
+- Struktur: **appender** (tujuan: console, file, rolling file), **encoder/pattern** (format baris), dan **logger** (level per package).
+- Rotasi file memakai `SizeAndTimeBasedRollingPolicy` (rotasi per hari *dan* per ukuran, dengan batas jumlah arsip).
+- Cocok sebagai **pilihan default**: sudah terpasang oleh `spring-boot-starter-logging`, dokumentasi luas, dan integrasi SLF4J-nya native (tanpa lapisan penerjemah).
+
+#### Log4j2
+
+Log4j2 adalah penulisan ulang total dari Log4j 1.x di bawah Apache. Arsitekturnya dibagi tiga artefak:
+
+| Artefak | Fungsi |
+|---|---|
+| `log4j-api` | API yang dipanggil kode (`LogManager.getLogger(...)`) |
+| `log4j-core` | Implementasi: appender, layout, filter, konfigurasi |
+| `log4j-slf4j2-impl` | **Bridge** agar panggilan SLF4J 2.x diteruskan ke Log4j2 (untuk SLF4J 1.7 pakai `log4j-slf4j-impl`) |
+
+Poin penting:
+
+- **Konfigurasi**: file `log4j2.xml` (juga mendukung `.json`, `.yaml`, `.properties`) di classpath. Strukturnya `Configuration → Appenders → Loggers`. Atribut `monitorInterval="30"` membuat konfigurasi dimuat ulang otomatis tanpa restart.
+- **Appender & Layout**: `Console`, `File`, `RollingFile` (dengan `Policies` waktu/ukuran dan `DefaultRolloverStrategy`), serta layout `PatternLayout` atau **`JsonTemplateLayout`** untuk log JSON (template bawaan `EcsLayout.json` kompatibel dengan stack Elastic).
+- **Async logging**: keunggulan khas Log4j2. *Async Loggers* memakai ring buffer **LMAX Disruptor**: thread aplikasi hanya menaruh event ke buffer, thread lain yang menulis ke disk. Throughput dan latensi jauh lebih baik pada beban tinggi. Diaktifkan dengan dependency `com.lmax:disruptor` dan properti `log4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector`. *Trade-off*: log terakhir bisa hilang jika proses mati mendadak, dan pola yang meminta info lokasi (`%C`, `%L`, `%M`) tetap mahal.
+- **Fitur lain**: *lookup* (`${env:NAMA}`, `${sys:nama}`) dan filter berbasis *marker*.
+- **Spring Boot**: keluarkan `spring-boot-starter-logging` dari dependency, tambahkan `spring-boot-starter-log4j2`, dan gunakan `log4j2-spring.xml`.
+- **Keamanan**: Log4Shell (CVE-2021-44228) dan celah susulannya sudah ditutup; pakai **rilis terbaru** dan jangan pernah memakai versi di bawah 2.17.1.
+
+#### TinyLog
+
+TinyLog (versi 2.x) adalah framework logging yang sengaja dibuat **kecil, cepat, dan minim konfigurasi**:
+
+- Dua artefak: `tinylog-api` dan `tinylog-impl`.
+- **API sendiri berbasis static method**: `Logger.info(...)` dari `org.tinylog.Logger` — tidak perlu membuat instance logger per class. Nama class otomatis terdeteksi.
+- Placeholder memakai `{}` seperti SLF4J; untuk exception, **object exception diletakkan pertama**: `Logger.error(e, "Gagal memproses {}", id)`.
+- **Lazy argument**: `Logger.debug("Hasil: {}", () -> hitungBerat())` — lambda baru dievaluasi jika level DEBUG aktif.
+- Konfigurasi di `tinylog.properties`: mendefinisikan satu atau lebih **writer** (`console`, `file`, `rolling file`, `json`, dll.), format baris, dan level (termasuk level per package dengan sintaks `level@com.contoh = debug`).
+- Jika proyek lain (atau library) sudah memakai SLF4J, tambahkan bridge `org.tinylog:slf4j-tinylog` agar semua log lewat TinyLog.
+- Cocok untuk **aplikasi CLI, tool kecil, dan layanan sederhana**. Ekosistemnya jauh lebih kecil dan tidak menjadi default di framework besar mana pun.
+
+#### Memilih Backend
+
+| | Logback | Log4j2 | TinyLog | JUL |
+|---|---|---|---|---|
+| Default di Spring Boot | Ya | Tidak (perlu starter khusus) | Tidak | Tidak |
+| Async berkinerja tinggi | Ada (`AsyncAppender`) | **Sangat kuat** (Async Loggers + Disruptor) | Writer dengan buffer | Terbatas |
+| Format konfigurasi | XML | XML / JSON / YAML / properties | `.properties` | `logging.properties` |
+| Log JSON siap pakai | Lewat encoder tambahan | `JsonTemplateLayout` bawaan | Writer `json` | Tidak |
+| Cocok untuk | Mayoritas aplikasi Spring Boot | Throughput tinggi, layout/filter kompleks | CLI & aplikasi kecil | Tanpa dependency, demo |
+
+**Aturan praktis:** mulai dengan Logback (default). Pindah ke Log4j2 jika benar-benar membutuhkan async logging berkinerja tinggi atau fitur layout/filter yang lebih kaya. Pilih TinyLog untuk aplikasi kecil yang ingin konfigurasi seminimal mungkin. Apa pun pilihannya, **kode tetap memakai SLF4J** sehingga pindah backend hanya mengubah `pom.xml` dan file konfigurasi.
+
 
 ## Praktik
 
@@ -413,6 +485,66 @@ bazel run //:app
 bazel test //...
 ```
 
+### Bazel: Dependency Eksternal dan Test
+
+Dependency Maven di Bazel didaftarkan di `MODULE.bazel` lewat `rules_jvm_external`. Nomor versi di bawah hanyalah contoh — **cek versi terbaru di [Bazel Central Registry](https://registry.bazel.build)** dan Maven Central.
+
+```
+demo-bazel/
+├── .bazelversion                 # mengunci versi Bazel
+├── MODULE.bazel
+├── BUILD
+└── src/
+    ├── main/java/com/contoh/app/App.java
+    └── test/java/com/contoh/app/AppTest.java
+```
+
+```python
+# MODULE.bazel
+module(name = "demo_bazel", version = "0.1.0")
+
+bazel_dep(name = "rules_java", version = "<versi terbaru>")
+bazel_dep(name = "rules_jvm_external", version = "<versi terbaru>")
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.install(
+    artifacts = [
+        "org.slf4j:slf4j-api:2.0.17",
+        "ch.qos.logback:logback-classic:1.5.18",
+    ],
+    repositories = ["https://repo1.maven.org/maven2"],
+)
+use_repo(maven, "maven")
+```
+
+Nama target eksternal diturunkan dari koordinat Maven dengan mengganti `.`, `:` dan `-` menjadi `_`: `org.slf4j:slf4j-api` menjadi `@maven//:org_slf4j_slf4j_api` (persis seperti yang dipakai pada `BUILD` di bagian sebelumnya).
+
+Untuk test: `java_test` bawaan Bazel menjalankan **JUnit 4** secara native. Untuk **JUnit 5/6** gunakan rule `java_junit5_test` dari modul `contrib_rules_jvm`:
+
+```python
+# BUILD (tambahan)
+load("@contrib_rules_jvm//java:defs.bzl", "java_junit5_test")
+
+java_junit5_test(
+    name = "app_test",
+    srcs = ["src/test/java/com/contoh/app/AppTest.java"],
+    test_class = "com.contoh.app.AppTest",
+    deps = [
+        ":app_lib",
+        "@maven//:org_junit_jupiter_junit_jupiter_api",
+    ],
+)
+```
+
+```bash
+bazel build //...                       # bangun semua target
+bazel test //...                        # jalankan semua test
+bazel query 'deps(//:app)'              # lihat graf dependency target app
+bazel build //:app                      # jalankan lagi tanpa perubahan: selesai instan berkat cache
+```
+
+> Contoh Bazel di atas mengikuti dokumentasi `rules_java`, `rules_jvm_external`, dan `contrib_rules_jvm`, tetapi **tidak dijalankan** pada lingkungan penyusunan materi (tanpa akses jaringan). Opsi `maven.install` dan nama rule dapat berubah antar versi; rujuk dokumentasi resmi masing-masing rule.
+
 ### Java Modules: Dua Modul dengan Enkapsulasi Kuat
 
 Struktur (dua modul dalam satu folder `mods`):
@@ -523,6 +655,215 @@ public class DemoLogging {
 }
 ```
 
+### Log4j2 sebagai Backend SLF4J (Mengganti Logback)
+
+Ambil project `demo-maven` dari praktik pertama modul ini. Tujuannya membuktikan prinsip facade: **kode Java tidak berubah sama sekali**, hanya `pom.xml` dan file konfigurasi.
+
+Pada `pom.xml`, **hapus** `logback-classic` lalu ganti dengan Log4j2 (versi hanyalah contoh — cek Maven Central):
+
+```xml
+<properties>
+    <log4j.version>2.25.1</log4j.version>
+</properties>
+
+<dependencyManagement>
+    <dependencies>
+        <dependency>                                   <!-- BOM: menyeragamkan versi semua artefak Log4j2 -->
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-bom</artifactId>
+            <version>${log4j.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+<dependencies>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>2.0.17</version>
+    </dependency>
+    <dependency>                                       <!-- bridge SLF4J 2.x -> Log4j2 -->
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j2-impl</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
+```
+
+Hapus `src/main/resources/logback.xml`, lalu buat `src/main/resources/log4j2.xml`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_DIR">logs</Property>
+        <Property name="POLA">%d{HH:mm:ss.SSS} %-5level [%t] %c{1} - %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${POLA}"/>
+        </Console>
+
+        <RollingFile name="File"
+                     fileName="${LOG_DIR}/app.log"
+                     filePattern="${LOG_DIR}/app-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="${POLA}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>               <!-- rotasi harian -->
+                <SizeBasedTriggeringPolicy size="10 MB"/>  <!-- dan per ukuran -->
+            </Policies>
+            <DefaultRolloverStrategy max="7"/>             <!-- simpan 7 arsip -->
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.contoh" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+```
+
+Kode aplikasi tetap memakai SLF4J (termasuk MDC), persis seperti sebelumnya:
+
+```java
+// src/main/java/com/contoh/app/App.java  — TIDAK diubah saat pindah dari Logback ke Log4j2
+package com.contoh.app;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
+public class App {
+    private static final Logger log = LoggerFactory.getLogger(App.class);
+
+    public static void main(String[] args) {
+        MDC.put("requestId", "req-001");                    // konteks per request
+        log.info("Pesanan {} dibuat oleh {}", 1001, "andi");
+        log.debug("Detail diagnostik (tampil karena com.contoh = debug)");
+        try {
+            Integer.parseInt("abc");
+        } catch (NumberFormatException e) {
+            log.error("Gagal memproses pesanan {}", 1001, e);   // exception terakhir -> stack trace tercatat
+        } finally {
+            MDC.clear();
+        }
+    }
+}
+```
+
+Untuk menampilkan `requestId` di setiap baris, ubah pola menjadi `%d{HH:mm:ss.SSS} %-5level [%X{requestId}] %c{1} - %msg%n`.
+
+Verifikasi bahwa **hanya satu backend** ada di classpath:
+
+```bash
+mvn dependency:tree | grep -Ei "logback|log4j|tinylog|slf4j"
+```
+
+**Log JSON untuk stack Elastic** — tambahkan `org.apache.logging.log4j:log4j-layout-template-json` dan ganti `PatternLayout` pada appender `Console`:
+
+```xml
+<Console name="Console" target="SYSTEM_OUT">
+    <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+</Console>
+```
+
+**Async Loggers** — tambahkan dependency `com.lmax:disruptor`, lalu buat `src/main/resources/log4j2.component.properties`:
+
+```properties
+log4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+```
+
+Semua logger kini asinkron tanpa mengubah satu pun baris kode atau konfigurasi appender.
+
+> Konfigurasi Log4j2 di atas mengikuti dokumentasi resmi Apache Log4j, tetapi **tidak dijalankan** pada lingkungan penyusunan materi (tanpa akses ke Maven Central). Nomor versi dan nama artefak (terutama bridge SLF4J) harus disesuaikan dengan versi SLF4J dan Log4j2 yang Anda pakai.
+
+### TinyLog: Konfigurasi `tinylog.properties`
+
+TinyLog bisa dipakai lewat **API-nya sendiri** (paling ringkas) atau lewat SLF4J dengan bridge. Dependency (versi contoh — cek Maven Central):
+
+```xml
+<dependency>
+    <groupId>org.tinylog</groupId>
+    <artifactId>tinylog-api</artifactId>
+    <version>2.7.0</version>
+</dependency>
+<dependency>
+    <groupId>org.tinylog</groupId>
+    <artifactId>tinylog-impl</artifactId>
+    <version>2.7.0</version>
+</dependency>
+<!-- Opsional: jika kode/library lain memakai SLF4J, alihkan lewat TinyLog -->
+<dependency>
+    <groupId>org.tinylog</groupId>
+    <artifactId>slf4j-tinylog</artifactId>
+    <version>2.7.0</version>
+</dependency>
+```
+
+Konfigurasi `src/main/resources/tinylog.properties`:
+
+```properties
+# Level global, dan level khusus untuk package tertentu
+level = info
+level@com.contoh = debug
+
+# Writer 1: console
+writer1 = console
+writer1.format = {date: HH:mm:ss.SSS} {level|min-size=5} [{thread}] {class-name}: {message}
+
+# Writer 2: file dengan rotasi (harian atau 10 MB), simpan 7 arsip
+writer2 = rolling file
+writer2.file = logs/app_{count}.log
+writer2.latest = logs/app.log
+writer2.policies = daily, size: 10mb
+writer2.backups = 7
+writer2.format = {date: yyyy-MM-dd HH:mm:ss.SSS} {level} {class}: {message}
+```
+
+Program memakai `org.tinylog.Logger` — **tanpa** membuat instance logger:
+
+```java
+// DemoTinyLog.java
+import org.tinylog.Logger;
+
+public class DemoTinyLog {
+    public static void main(String[] args) {
+        Logger.info("Aplikasi mulai");
+        Logger.debug("Detail diagnostik untuk {}", "pengembang");
+
+        // Lazy argument: lambda hanya dievaluasi jika level DEBUG aktif
+        Logger.debug("Hasil perhitungan berat: {}", () -> hitungBerat());
+
+        try {
+            Integer.parseInt("abc");
+        } catch (NumberFormatException e) {
+            Logger.error(e, "Gagal parse {}", "abc");        // exception DI DEPAN, stack trace ikut tercatat
+        }
+    }
+
+    private static int hitungBerat() {
+        return 42;                                           // bayangkan perhitungan mahal
+    }
+}
+```
+
+Eksperimen: ubah `level@com.contoh = debug` menjadi `warn`, jalankan ulang, dan amati baris mana yang menghilang. Lalu bandingkan dengan `DemoLogging` (JUL) di atas: konfigurasi dan pemanggilannya jauh lebih ringkas.
+
+> Konfigurasi TinyLog di atas mengikuti dokumentasi resmi tinylog.org, tetapi **tidak dijalankan** pada lingkungan penyusunan materi. Nama placeholder format dan opsi writer dapat berbeda antar versi; rujuk [dokumentasi TinyLog](https://tinylog.org/v2/configuration/) untuk versi Anda.
+
 ## Latihan
 
 1. Buat project Maven dengan `maven-archetype-quickstart` atau dari [start.spring.io](https://start.spring.io) tanpa dependency, lalu jalankan `mvn clean package`. Sebutkan phase yang dilewati dan file apa yang muncul di folder `target/`.
@@ -530,6 +871,9 @@ public class DemoLogging {
 3. Terjemahkan `pom.xml` project Anda ke `build.gradle.kts`. Bandingkan jumlah baris, keterbacaan, dan jelaskan perbedaan `implementation` vs `api` vs `runtimeOnly`.
 4. Rakit dua modul JPMS seperti contoh, lalu: (a) coba mengakses package yang tidak di-export dan catat pesan error-nya, (b) jalankan `jdeps`, (c) coba buat runtime ringkas dengan `jlink --module-path ... --add-modules com.contoh.app --output runtime-mini` dan bandingkan ukurannya dengan JDK penuh.
 5. Jelaskan peran SLF4J sebagai **facade** dan mengapa kode aplikasi sebaiknya hanya bergantung pada SLF4J. Lalu tulis tiga contoh log yang **buruk** (konkatenasi string, data sensitif, log-dan-lempar-ulang) beserta perbaikannya.
+6. Ganti Logback pada project latihan 2 dengan **Log4j2** tanpa mengubah satu baris pun kode Java. Buktikan dengan `git diff` bahwa hanya `pom.xml` dan file konfigurasi yang berubah, lalu pastikan hanya satu backend di classpath (`mvn dependency:tree`). Aktifkan `JsonTemplateLayout` dan jelaskan keuntungan log JSON untuk pencarian di Elasticsearch.
+7. Tulis ulang `DemoLogging` (JUL) memakai **TinyLog**: dua writer (console level `debug`, file rolling), dan level `com.contoh` berbeda dari level global lewat `level@`. Jelaskan kapan Anda memilih TinyLog, Logback, atau Log4j2 untuk sebuah proyek.
+8. Untuk project Bazel di atas, tambahkan satu `java_library` kedua (misalnya `util_lib`) yang dipakai oleh `app_lib`. Jalankan `bazel query 'deps(//:app)'`, ubah satu file di `util_lib`, dan jelaskan target mana saja yang dibangun ulang dan mengapa.
 
 ---
 

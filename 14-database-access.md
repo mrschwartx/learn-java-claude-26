@@ -17,6 +17,7 @@
   - [Menjalankan PostgreSQL dengan Docker Compose](#menjalankan-postgresql-dengan-docker-compose)
   - [JDBC Murni: Query, Transaksi, dan Batch](#jdbc-murni-query-transaksi-dan-batch)
   - [JPA + Spring Data JPA: Entity, Repository, dan Service](#jpa--spring-data-jpa-entity-repository-dan-service)
+  - [Ebean: Entity, Query Bean, dan Transaksi](#ebean-entity-query-bean-dan-transaksi)
 - [Latihan](#latihan)
 
 ---
@@ -168,7 +169,7 @@ baru.setNama("Ani");
 baru.save();                                        // INSERT; tanpa EntityManager/sesi
 ```
 
-> Sintaks dan setup Ebean (annotation processor, enhancement plugin, `DB` default) berubah antar versi — ikuti panduan resmi di [ebean.io](https://ebean.io) untuk versi yang Anda pakai.
+> Sintaks dan setup Ebean (annotation processor, enhancement plugin, `DB` default) berubah antar versi — ikuti panduan resmi di [ebean.io](https://ebean.io) untuk versi yang Anda pakai. Contoh proyek lengkap (entity, query bean, transaksi, perbandingan dengan JPA) ada di bagian **Praktik → Ebean**.
 
 ### 14.7 Transaksi dan Isolation Level
 
@@ -531,6 +532,236 @@ Panggil `totalSemuaNPlusSatu("Bandung")` lalu `totalSemua("Bandung")` dan **band
 
 > Kode JPA/Spring Data di atas mengikuti API Jakarta Persistence dan Spring Data JPA, tetapi **tidak dijalankan** pada lingkungan penyusunan materi. Jika kompilasi gagal karena perbedaan versi, rujuk dokumentasi versi Spring Boot Anda.
 
+### Ebean: Entity, Query Bean, dan Transaksi
+
+Kita memakai database `toko` dari Docker Compose di atas (tabel `pelanggan` dan `pesanan` sudah ada), jadi **tidak ada pembuatan skema oleh Ebean** — Ebean hanya memetakan tabel yang sudah ada. Buat proyek Maven baru dengan struktur:
+
+```
+demo-ebean/
+├── pom.xml
+└── src/main/
+    ├── java/com/contoh/toko/
+    │   ├── DemoEbean.java
+    │   └── domain/
+    │       ├── Pelanggan.java
+    │       └── Pesanan.java
+    └── resources/application.properties
+```
+
+Ebean membutuhkan **dua langkah build** yang tidak ada di JPA: *annotation processor* untuk membuat class query bean (`QPelanggan`, `QPesanan`) dan *enhancement* bytecode untuk lazy loading dan pelacakan perubahan. Nomor versi sengaja tidak dikunci — **gunakan versi terbaru dari [ebean.io](https://ebean.io) dan Maven Central**.
+
+```xml
+<!-- pom.xml (bagian penting) -->
+<properties>
+    <ebean.version><!-- isi dengan versi terbaru --></ebean.version>
+</properties>
+
+<dependencies>
+    <dependency>
+        <groupId>io.ebean</groupId>
+        <artifactId>ebean-postgres</artifactId>          <!-- ORM + dukungan platform PostgreSQL -->
+        <version>${ebean.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>io.ebean</groupId>
+        <artifactId>ebean-querybean</artifactId>         <!-- API query bean type-safe -->
+        <version>${ebean.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>io.ebean</groupId>
+        <artifactId>querybean-generator</artifactId>     <!-- annotation processor: membuat QPelanggan, dst. -->
+        <version>${ebean.version}</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>                                         <!-- agar SQL bisa dilihat di log (Modul 12) -->
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+    </dependency>
+</dependencies>
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>io.ebean</groupId>
+            <artifactId>ebean-maven-plugin</artifactId>   <!-- enhancement bytecode saat build -->
+            <version><!-- versi terbaru --></version>
+            <executions>
+                <execution>
+                    <phase>process-classes</phase>
+                    <configuration>
+                        <transformArgs>debug=1</transformArgs>
+                    </configuration>
+                    <goals>
+                        <goal>enhance</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+> Jika Anda menjalankan class dari IDE (bukan lewat Maven), aktifkan plugin/opsi **Ebean enhancement** di IDE, atau jalankan lewat Maven. Tanpa enhancement, lazy loading dan dirty tracking tidak bekerja dengan benar.
+
+Koneksi cukup dikonfigurasi di `src/main/resources/application.properties` — Ebean membuat `Database` default (`DB`) otomatis dari berkas ini:
+
+```properties
+datasource.db.url=jdbc:postgresql://localhost:5432/toko
+datasource.db.username=belajar
+datasource.db.password=rahasia
+```
+
+Entity — perhatikan **tidak ada `EntityManager`**; `Model` memberi method `save()`, `delete()`, dan seterusnya:
+
+```java
+// domain/Pelanggan.java
+package com.contoh.toko.domain;
+
+import io.ebean.Model;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "pelanggan")
+public class Pelanggan extends Model {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)   // kolom BIGSERIAL yang sudah ada
+    private Long id;
+
+    private String nama;
+    private String kota;
+
+    @OneToMany(mappedBy = "pelanggan", cascade = CascadeType.ALL)
+    private List<Pesanan> pesanan = new ArrayList<>();
+
+    public Long getId() { return id; }
+    public String getNama() { return nama; }
+    public void setNama(String nama) { this.nama = nama; }
+    public String getKota() { return kota; }
+    public void setKota(String kota) { this.kota = kota; }
+    public List<Pesanan> getPesanan() { return pesanan; }
+}
+```
+
+```java
+// domain/Pesanan.java
+package com.contoh.toko.domain;
+
+import io.ebean.Model;
+import io.ebean.annotation.WhenCreated;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "pesanan")
+public class Pesanan extends Model {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "pelanggan_id")
+    private Pelanggan pelanggan;
+
+    private long total;
+
+    @WhenCreated                                          // diisi otomatis saat INSERT (kolom NOT NULL)
+    private LocalDateTime dibuat;
+
+    public Long getId() { return id; }
+    public Pelanggan getPelanggan() { return pelanggan; }
+    public void setPelanggan(Pelanggan pelanggan) { this.pelanggan = pelanggan; }
+    public long getTotal() { return total; }
+    public void setTotal(long total) { this.total = total; }
+    public LocalDateTime getDibuat() { return dibuat; }
+}
+```
+
+Setelah `mvn compile`, annotation processor menghasilkan `QPelanggan` dan `QPesanan` di sub-package `query` dari package entity (`com.contoh.toko.domain.query`). Program demo:
+
+```java
+// DemoEbean.java
+package com.contoh.toko;
+
+import com.contoh.toko.domain.Pelanggan;
+import com.contoh.toko.domain.Pesanan;
+import com.contoh.toko.domain.query.QPelanggan;
+import io.ebean.DB;
+import io.ebean.Transaction;
+import java.util.List;
+
+public class DemoEbean {
+    public static void main(String[] args) {
+
+        // 1) Query bean: type-safe, salah nama field = error saat kompilasi
+        List<Pelanggan> bandung = new QPelanggan()
+                .kota.eq("Bandung")
+                .orderBy().nama.asc()
+                .findList();
+        bandung.forEach(p -> System.out.println("Pelanggan Bandung: " + p.getNama()));
+
+        // 2) Query dinamis berbasis string (cocok untuk filter yang disusun saat runtime)
+        List<Pelanggan> jakarta = DB.find(Pelanggan.class)
+                .where().eq("kota", "Jakarta")
+                .findList();
+        System.out.println("Jumlah pelanggan Jakarta: " + jakarta.size());
+
+        // 3) Relasi: lazy load vs fetch eksplisit (amati jumlah SQL di log)
+        long lazy = 0;
+        for (Pelanggan p : DB.find(Pelanggan.class).findList()) {
+            for (Pesanan o : p.getPesanan()) lazy += o.getTotal();      // memicu lazy loading
+        }
+        long eager = 0;
+        for (Pelanggan p : DB.find(Pelanggan.class).fetch("pesanan").findList()) {
+            for (Pesanan o : p.getPesanan()) eager += o.getTotal();     // pesanan ikut diambil di awal
+        }
+        System.out.println("Total lazy = " + lazy + ", fetch = " + eager);
+
+        // 4) Transaksi + cascade: simpan pelanggan beserta pesanannya sekaligus
+        try (Transaction txn = DB.beginTransaction()) {
+            Pelanggan baru = new Pelanggan();
+            baru.setNama("Eka");
+            baru.setKota("Bandung");
+
+            Pesanan pesanan = new Pesanan();
+            pesanan.setPelanggan(baru);
+            pesanan.setTotal(90_000L);
+            baru.getPesanan().add(pesanan);
+
+            baru.save();                                   // INSERT pelanggan + pesanan (cascade)
+            txn.commit();                                  // tanpa commit, transaksi di-rollback saat close
+        }
+
+        // 5) SQL native untuk laporan, hasil dibaca sebagai SqlRow
+        DB.sqlQuery("select kota, count(*) as jumlah from pelanggan group by kota order by kota")
+                .findList()
+                .forEach(r -> System.out.println(r.getString("kota") + ": " + r.getLong("jumlah")));
+    }
+}
+```
+
+Untuk melihat SQL yang dihasilkan Ebean, tambahkan ke `logback.xml` (Modul 12): `<logger name="io.ebean.SQL" level="debug"/>`. Bandingkan jumlah query pada langkah 3: tanpa `fetch("pesanan")`, Ebean memicu query tambahan saat relasi diakses (secara default memuatnya dalam batch kecil sehingga lebih ringan daripada N+1 murni, tetapi **tetap lebih boros** daripada satu query dengan fetch).
+
+**Ebean vs JPA/Hibernate — ringkasan perbedaan yang terasa saat memakai:**
+
+| Aspek | JPA / Hibernate | Ebean |
+|---|---|---|
+| Sesi / persistence context | Ada (`EntityManager`, state *managed/detached*) | **Tidak ada**; object bisa di-`save()` kapan saja |
+| Menyimpan perubahan | Dirty checking otomatis saat commit pada entity *managed* | Dirty tracking lewat enhancement; panggil `save()` atau `update()` |
+| Query type-safe | Criteria API / metamodel (verbose) | **Query bean** (`new QPelanggan().kota.eq(...)`) |
+| Langkah build tambahan | Biasanya tidak ada | Annotation processor + enhancement bytecode |
+| Ekosistem | Standar industri, default Spring Boot | Lebih kecil; integrasi Spring perlu setup sendiri |
+
+> Contoh Ebean di atas mengikuti dokumentasi ebean.io tetapi **tidak dijalankan** pada lingkungan penyusunan materi (tanpa akses ke Maven Central dan database). Nama artefak, konfigurasi, dan paket yang digenerate dapat berubah antar versi — rujuk [dokumentasi Ebean](https://ebean.io/docs/) untuk versi Anda.
+
 ## Latihan
 
 1. Jalankan PostgreSQL via Docker Compose, buat skema di atas, lalu tulis program JDBC yang menampilkan semua pelanggan beserta jumlah pesanan dan total belanjanya (`JOIN` + `GROUP BY`). Mengapa kita memakai `PreparedStatement` dan bukan konkatenasi string?
@@ -538,6 +769,7 @@ Panggil `totalSemuaNPlusSatu("Bandung")` lalu `totalSemua("Bandung")` dan **band
 3. Gunakan `PreparedStatement.addBatch()` untuk meng-insert 1.000 pelanggan sekaligus, lalu bandingkan waktunya dengan 1.000 `executeUpdate` terpisah dalam auto-commit. Jelaskan penyebab perbedaannya.
 4. Buat entity JPA `Pelanggan`/`Pesanan` dan repository seperti contoh, tambahkan `@Version` pada `Pelanggan`, lalu simulasikan dua transaksi yang mengubah pelanggan yang sama untuk menimbulkan `OptimisticLockException`. Jelaskan kapan optimistic locking lebih tepat daripada pessimistic.
 5. Aktifkan log SQL, buat 20 pelanggan dengan masing-masing 3 pesanan, lalu hitung jumlah query untuk `totalSemuaNPlusSatu` vs `totalSemua`. Jelaskan apa itu N+1 dan tiga cara mengatasinya (`join fetch`, `@EntityGraph`, batch fetching), serta mengapa `ddl-auto: update` tidak boleh dipakai di production.
+6. Dengan project Ebean di atas: (a) tambahkan satu kolom baru `email` lewat `ALTER TABLE` dan petakan ke entity, (b) tulis query bean yang menampilkan pelanggan yang total pesanannya di atas 100.000 (petunjuk: `QPesanan` dengan `pelanggan.nama` atau `sqlQuery` + `group by`), (c) bandingkan SQL di log antara versi dengan dan tanpa `fetch("pesanan")`. Lalu jelaskan dua perbedaan utama Ebean dan JPA yang paling memengaruhi cara Anda menulis kode.
 
 ---
 

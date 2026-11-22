@@ -15,6 +15,9 @@
   - [DI Manual vs Container: Membangun `MiniContainer`](#di-manual-vs-container-membangun-minicontainer)
   - [Spring Boot: REST API Produk](#spring-boot-rest-api-produk)
   - [Javalin, Quarkus, dan Play — Versi Singkat](#javalin-quarkus-dan-play--versi-singkat)
+  - [Quarkus: Resource, CDI, Konfigurasi, dan Test](#quarkus-resource-cdi-konfigurasi-dan-test)
+  - [Play Framework: Struktur Proyek dan Endpoint JSON](#play-framework-struktur-proyek-dan-endpoint-json)
+  - [Javalin: JSON, Middleware, Error Handler, dan Test](#javalin-json-middleware-error-handler-dan-test)
 - [Latihan](#latihan)
 
 ---
@@ -124,6 +127,17 @@ Fitur yang sering dipakai: `@RestController` + `@GetMapping`/`@PostMapping`, `@P
 - **Quarkus** memakai standar **Jakarta REST** (`@Path`, `@GET`) dan **CDI** (`@ApplicationScoped`, `@Inject`). Berbeda dengan Spring, banyak pekerjaan reflection dipindah ke **waktu build**, menghasilkan startup milidetik pada native image. Perintah utama: `quarkus dev` (live coding), `quarkus build`.
 - **Play** mendefinisikan URL di file **`conf/routes`** dan menulis controller yang mengembalikan `Result`. Dijalankan dengan **sbt** (`sbt run`). Sejak Play 3 mesin aktornya memakai Apache **Pekko**.
 - **Javalin** hanya butuh beberapa baris: buat aplikasi, daftarkan handler `(ctx) -> ...`, lalu `start(port)`. Cocok untuk memahami HTTP tanpa lapisan abstraksi.
+
+Perbandingan cara kerja keempat framework dalam satu tabel:
+
+| | Spring Boot | Quarkus | Javalin | Play |
+|---|---|---|---|---|
+| Gaya | Konvensi + auto-configuration, anotasi | Anotasi (Jakarta REST/CDI), optimasi saat build | Fungsional, mirip Express/Sinatra | MVC dengan file `routes` |
+| Dependency Injection | Spring container | CDI (ArC), diselesaikan saat build | **Tidak ada bawaan** (bawa sendiri: Guice, Dagger, atau manual) | Guice (default) |
+| Konfigurasi | `application.yml` / `.properties` | `application.properties` (profil `%dev`, `%test`) | Kode Java (`Javalin.create(config -> ...)`) | `application.conf` (HOCON) |
+| Build tool utama | Maven / Gradle | Maven / Gradle | Maven / Gradle | **sbt** |
+| Pengujian | `@SpringBootTest`, MockMvc | `@QuarkusTest` + REST Assured | `javalin-testtools` | Helper test Play + JUnit |
+| Ciri khas | Ekosistem terluas | Startup cepat, dukungan native image | Sangat ringan, belajar cepat | Reactive/async sejak awal |
 
 ### 13.6 Memilih Framework
 
@@ -551,6 +565,250 @@ GET     /halo        controllers.HaloController.halo()
 # jalankan: sbt run   → http://localhost:9000/halo
 ```
 
+### Quarkus: Resource, CDI, Konfigurasi, dan Test
+
+Buat proyek: `quarkus create app com.contoh:demo-quarkus --extension=rest` (generator juga menambahkan dependency test yang benar). Struktur yang kita bangun:
+
+```
+demo-quarkus/
+├── pom.xml
+└── src/
+    ├── main/
+    │   ├── java/com/contoh/
+    │   │   ├── SapaanService.java
+    │   │   └── HaloResource.java
+    │   └── resources/application.properties
+    └── test/java/com/contoh/HaloResourceTest.java
+```
+
+```java
+// SapaanService.java — bean CDI; Quarkus menyelesaikan injection saat build
+package com.contoh;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+@ApplicationScoped
+public class SapaanService {
+
+    @ConfigProperty(name = "sapaan.awalan", defaultValue = "Halo")
+    String awalan;
+
+    public String sapa(String nama) {
+        return awalan + ", " + nama;
+    }
+}
+```
+
+```java
+// HaloResource.java — constructor injection (satu constructor, @Inject boleh dihilangkan)
+package com.contoh;
+
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+
+@Path("/halo")
+public class HaloResource {
+
+    private final SapaanService service;
+
+    public HaloResource(SapaanService service) {
+        this.service = service;
+    }
+
+    @GET
+    @Path("/{nama}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String sapa(@PathParam("nama") String nama) {
+        return service.sapa(nama);
+    }
+}
+```
+
+```properties
+# src/main/resources/application.properties
+quarkus.http.port=8080
+sapaan.awalan=Halo
+%dev.sapaan.awalan=Halo (dev)      # hanya aktif saat `quarkus dev`
+%test.sapaan.awalan=Hai            # hanya aktif saat test
+```
+
+```java
+// src/test/java/com/contoh/HaloResourceTest.java — REST Assured: lihat Modul 15
+package com.contoh;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
+
+import io.quarkus.test.junit.QuarkusTest;
+import org.junit.jupiter.api.Test;
+
+@QuarkusTest
+class HaloResourceTest {
+
+    @Test
+    void sapaNama() {
+        given().when().get("/halo/Ani")
+               .then().statusCode(200).body(is("Hai, Ani"));   // awalan "Hai" dari profil %test
+    }
+}
+```
+
+```bash
+quarkus dev                  # mode dev: live reload, buka http://localhost:8080/halo/Ani
+./mvnw test                  # jalankan test (Quarkus menyalakan aplikasi sungguhan untuk @QuarkusTest)
+./mvnw package               # hasil di target/quarkus-app/, jalankan: java -jar target/quarkus-app/quarkus-run.jar
+```
+
+### Play Framework: Struktur Proyek dan Endpoint JSON
+
+Play memakai **sbt**, bukan Maven/Gradle. Cara termudah memulai adalah template resmi: `sbt new playframework/play-java-seed.g8`. Struktur yang relevan:
+
+```
+demo-play/
+├── build.sbt                       # .enablePlugins(PlayJava)
+├── project/plugins.sbt             # addSbtPlugin("org.playframework" % "sbt-plugin" % "<versi Play>")
+├── conf/
+│   ├── application.conf            # konfigurasi (HOCON)
+│   └── routes                      # peta URL -> action controller
+└── app/
+    ├── controllers/ProdukController.java
+    └── services/ProdukService.java
+```
+
+```
+# conf/routes
+GET     /halo               controllers.HaloController.halo()
+GET     /produk/:id         controllers.ProdukController.detail(id: Long)
+```
+
+```java
+// app/services/ProdukService.java — di-inject oleh Guice (DI bawaan Play)
+package services;
+
+import com.google.inject.Singleton;
+import java.util.Map;
+import java.util.Optional;
+
+@Singleton
+public class ProdukService {
+    public record Produk(Long id, String nama) {}
+
+    private final Map<Long, Produk> data =
+            Map.of(1L, new Produk(1L, "Kopi"), 2L, new Produk(2L, "Teh"));
+
+    public Optional<Produk> cari(Long id) {
+        return Optional.ofNullable(data.get(id));
+    }
+}
+```
+
+```java
+// app/controllers/ProdukController.java
+package controllers;
+
+import jakarta.inject.Inject;      // Play 3.0.x memakai javax.inject.Inject — sesuaikan dengan versi Play Anda
+import play.libs.Json;
+import play.mvc.Controller;
+import play.mvc.Result;
+import services.ProdukService;
+
+public class ProdukController extends Controller {
+
+    private final ProdukService service;
+
+    @Inject
+    public ProdukController(ProdukService service) {
+        this.service = service;
+    }
+
+    public Result detail(Long id) {
+        return service.cari(id)
+                .map(p -> ok(Json.toJson(p)))                                   // 200 + JSON
+                .orElseGet(() -> notFound(Json.newObject().put("error", "tidak ditemukan")));   // 404
+    }
+}
+```
+
+```bash
+sbt run          # http://localhost:9000/produk/1   -> {"id":1,"nama":"Kopi"}
+sbt test         # jalankan test
+```
+
+### Javalin: JSON, Middleware, Error Handler, dan Test
+
+Tambahkan dependency `io.javalin:javalin`, `com.fasterxml.jackson.core:jackson-databind` (agar `ctx.json(...)` bekerja), `org.slf4j:slf4j-simple`, dan untuk test `io.javalin:javalin-testtools`.
+
+```java
+// ProdukApp.java
+import io.javalin.Javalin;
+import io.javalin.http.HttpStatus;
+import io.javalin.http.NotFoundResponse;
+import java.util.Map;
+
+public class ProdukApp {
+    public record Produk(long id, String nama) {}
+
+    private static final Map<Long, Produk> DATA =
+            Map.of(1L, new Produk(1, "Kopi"), 2L, new Produk(2, "Teh"));
+
+    // Dipisah dari main() agar mudah dites tanpa membuka port sungguhan
+    public static Javalin buatApp() {
+        Javalin app = Javalin.create(config -> config.useVirtualThreads = true);
+
+        app.before(ctx -> System.out.println(ctx.method() + " " + ctx.path()));   // middleware sederhana
+
+        app.get("/halo", ctx -> ctx.result("Halo dari Javalin"));
+
+        app.get("/produk/{id}", ctx -> {
+            long id = Long.parseLong(ctx.pathParam("id"));
+            Produk p = DATA.get(id);
+            if (p == null) throw new NotFoundResponse("Produk tidak ditemukan");
+            ctx.json(p);                                                          // serialisasi lewat Jackson
+        });
+
+        app.exception(NumberFormatException.class,
+                (e, ctx) -> ctx.status(HttpStatus.BAD_REQUEST).result("ID harus berupa angka"));
+
+        return app;
+    }
+
+    public static void main(String[] args) {
+        buatApp().start(7070);
+    }
+}
+```
+
+```java
+// ProdukAppTest.java
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.javalin.testtools.JavalinTest;
+import org.junit.jupiter.api.Test;
+
+class ProdukAppTest {
+    @Test
+    void produkDitemukan() {
+        JavalinTest.test(ProdukApp.buatApp(), (server, client) -> {
+            var response = client.get("/produk/1");
+            assertEquals(200, response.code());
+            assertEquals("{\"id\":1,\"nama\":\"Kopi\"}", response.body().string());
+        });
+    }
+
+    @Test
+    void produkTidakAda() {
+        JavalinTest.test(ProdukApp.buatApp(), (server, client) ->
+                assertEquals(404, client.get("/produk/99").code()));
+    }
+}
+```
+
+> Contoh Quarkus, Play, dan Javalin di atas mengikuti dokumentasi resmi masing-masing framework tetapi **tidak dijalankan** pada lingkungan penyusunan materi (tanpa akses ke Maven Central/sbt). Nama artefak test, versi plugin, dan paket `inject` (javax vs jakarta) dapat berbeda antar versi; rujuk dokumentasi versi yang Anda pakai.
+
 ## Latihan
 
 1. Tambahkan interface `Pembayaran` beserta dua implementasi ke contoh `DemoContainer`, lalu suntikkan ke `PesananService`. Sebelum itu, **prediksi** apa yang terjadi jika kedua implementasi didaftarkan sekaligus, lalu jelaskan bagaimana Spring menyelesaikan kasus ini dengan `@Primary`/`@Qualifier`.
@@ -558,6 +816,7 @@ GET     /halo        controllers.HaloController.halo()
 3. Jelaskan, dengan merujuk contoh Anda, tiga alasan constructor injection lebih disarankan daripada field injection `@Autowired`, dan tunjukkan bagaimana Anda akan menguji `PesananService` secara manual tanpa container apa pun.
 4. Bangun REST API Spring Boot di atas, lalu lengkapi dengan `PUT /api/produk/{id}` dan `DELETE /api/produk/{id}`. Pastikan status code yang dikembalikan tepat (200/204/404), dan tambahkan satu aturan validasi baru pada `ProdukRequest`.
 5. Implementasikan endpoint yang sama (`GET /halo` dan `GET /produk/{id}`) dengan Javalin atau Quarkus, lalu buat tabel perbandingan Spring Boot vs pilihan Anda dari sisi: jumlah baris kode, waktu startup, ukuran artefak, dan kemudahan menambah fitur (validasi, keamanan, akses database).
+6. Dari tiga contoh di atas (Quarkus, Play, Javalin), pilih satu dan tambahkan `POST /produk` yang menerima JSON `{"nama": "..."}`, mengembalikan **201 Created** dengan produk baru, dan **400** jika `nama` kosong. Tulis minimal satu test untuk masing-masing kasus. Lalu jelaskan bagaimana Anda menyuntikkan `ProdukService` pada framework pilihan Anda dan apa bedanya dengan DI di Spring Boot.
 
 ---
 

@@ -32,18 +32,18 @@ Java melengkapi seri course Anda dari sudut **bahasa dan aplikasi**: Docker/Kube
 |---|---|
 | Basic Syntax, Data Types, Variables and Scopes, Type Casting, Math Operations | [2](02-dasar-bahasa.md) |
 | Lifecycle of a Program | [1](01-pengenalan.md) |
-| Conditionals, Loops, Arrays, Strings and Methods | [3](03-kontrol-alur-array-string.md) |
-| Classes and Objects, Attributes and Methods, Access Specifiers, Static Keyword, Nested Classes, Packages, Initializer Block, Object Lifecycle, Pass by Value / Reference | [4](04-class-object.md) |
-| Basics of OOP, Inheritance, Abstraction, Encapsulation, Interfaces, Method Overloading / Overriding, Static vs Dynamic Binding, Final Keyword, Method Chaining | [5](05-pilar-oop.md) |
+| Conditionals, Loops, Arrays, Strings (bagian *Strings* dari "Strings and Methods") | [3](03-kontrol-alur-array-string.md) |
+| Classes and Objects, Attributes and Methods (termasuk bagian *Methods* dari "Strings and Methods": parameter, return, varargs, rekursi — lihat 4.2), Access Specifiers, Static Keyword, Nested Classes, Packages, Initializer Block, Object Lifecycle, Pass by Value / Reference | [4](04-class-object.md) |
+| Basics of OOP (5.1; topik ini juga muncul di grup *Learn the Basics* pada roadmap), Inheritance, Abstraction, Encapsulation, Interfaces, Method Overloading / Overriding, Static vs Dynamic Binding, Final Keyword, Method Chaining | [5](05-pilar-oop.md) |
 | Enums, Record, Annotations | [6](06-fitur-modern.md) |
 | Array vs ArrayList, Set, Map, Queue, Stack, Dequeue, Iterator, Generic Collections, Optionals | [7](07-generics-collections.md) |
 | Exception Handling, I/O Operations, File Operations | [8](08-exception-io.md) |
 | Lambda Expressions, Functional Programming (Composition, High Order Functions, Functional Interfaces), Stream API | [9](09-functional-programming.md) |
 | Concurrency, Threads, Virtual Threads, Java Memory Model, `volatile` keyword | [10](10-concurrency.md) |
 | Date and Time, Regular Expressions, Cryptography, Networking | [11](11-date-time-regex-crypto-networking.md) |
-| Build Tools (Maven, Gradle, Bazel), Modules, Logging Frameworks (Logback, Log4j2, SLF4J, TinyLog) | [12](12-build-tools-modules-logging.md) |
-| Dependency Injection, Web Frameworks (Spring Boot, Play Framework, Quarkus, Javalin) | [13](13-dependency-injection-web-framework.md) |
-| Database Access (JDBC, Spring Data JPA, Hibernate, EBean) | [14](14-database-access.md) |
+| Build Tools (Maven, Gradle, Bazel), Modules, Logging Frameworks (Logback, Log4j2, SLF4J, TinyLog — lihat 12.7 dan 12.8, lengkap dengan konfigurasi dan praktik) | [12](12-build-tools-modules-logging.md) |
+| Dependency Injection, Web Frameworks (Spring Boot, Play Framework, Quarkus, Javalin — masing-masing punya contoh proyek + test) | [13](13-dependency-injection-web-framework.md) |
+| Database Access (JDBC, Spring Data JPA, Hibernate, EBean — EBean punya praktik tersendiri) | [14](14-database-access.md) |
 | Testing (JUnit, TestNG, Mockito, REST Assured, JMeter, Cucumber-JVM) | [15](15-testing-advanced.md) |
 
 ## Cara Menggunakan Materi Ini
@@ -64,7 +64,7 @@ Java melengkapi seri course Anda dari sudut **bahasa dan aplikasi**: Docker/Kube
 
 Java dirilis setiap enam bulan, dan framework di sekitarnya berubah cukup cepat. Materi ini menargetkan **Java 25 (LTS)**; hampir seluruh kode juga berjalan di **Java 21**, dan bagian yang membutuhkan versi lebih baru (misalnya Java 22–25) ditandai jelas di dalam komentar kode. Contoh dependency memakai nomor versi yang berlaku saat materi disusun (Spring Boot 4.x, JUnit 6.x, SLF4J 2.0.x, Logback 1.5.x) — **cek versi terbaru di [Maven Central](https://central.sonatype.com)** sebelum memakainya. Setiap kali dokumentasi resmi berbeda dengan materi ini untuk versi Anda, dokumentasi resmi yang menang.
 
-Contoh kode JDK murni yang berlabel nama file (Modul 1–13 dan 15), termasuk dua modul JPMS di Modul 12, telah dijalankan dan diverifikasi pada Java 21. Contoh yang bergantung pada library eksternal (Spring Boot, JPA, Mockito, Cucumber, dsb.) mengikuti dokumentasi resminya dan ditandai di dalam materi.
+Contoh kode JDK murni yang berlabel nama file (Modul 1–13 dan 15), termasuk dua modul JPMS di Modul 12, telah dijalankan dan diverifikasi pada Java 21. Contoh yang bergantung pada library eksternal (Spring Boot, JPA, Mockito, Cucumber, dsb.) mengikuti dokumentasi resminya dan ditandai di dalam materi. Termasuk di dalamnya contoh Log4j2, TinyLog, Bazel, Quarkus, Play, Javalin, dan Ebean di Modul 12–14: semuanya ditulis sesuai dokumentasi resmi, **belum dijalankan** pada lingkungan penyusunan, dan nomor versinya hanya contoh.
 
 ## Sumber Referensi
 
