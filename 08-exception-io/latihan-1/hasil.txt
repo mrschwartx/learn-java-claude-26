@@ -1,0 +1,14 @@
+Masukkan umur:
+  Ditolak -> umur harus berupa bilangan bulat, bukan "abc"
+Masukkan umur:
+  Ditolak -> umur tidak boleh kosong
+Masukkan umur:
+  Ditolak -> umur harus di antara 0 dan 150, bukan -5
+Masukkan umur:
+  Ditolak -> umur harus di antara 0 dan 150, bukan 200
+Masukkan umur:
+  Ditolak -> umur harus berupa bilangan bulat, bukan "3.5"
+Masukkan umur:
+  Ditolak -> umur harus berupa bilangan bulat, bukan "99999999999"
+Masukkan umur:
+Umur valid: 30

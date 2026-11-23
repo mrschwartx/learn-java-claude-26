@@ -1,0 +1,6 @@
+Belajar Java itu menyenangkan.
+Pengecualian (exception) membantu program gagal dengan anggun!
+
+Kata-kata panjang seperti internasionalisasi jarang dipakai,
+tetapi "konfigurasi" dan pemrograman sering sekali muncul.
+Angka 12345 dan tahun 2026 juga dihitung sebagai kata.

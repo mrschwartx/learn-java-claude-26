@@ -1,0 +1,19 @@
+"{[()]}"     -> SEIMBANG
+"{[(])}"     -> tidak seimbang
+"(("         -> tidak seimbang
+"))"         -> tidak seimbang
+""           -> SEIMBANG
+"a(b)[c]{d}" -> SEIMBANG
+"([)]"       -> tidak seimbang
+"(()"        -> tidak seimbang
+"{[]}()"     -> SEIMBANG
+
+== Perbandingan Stack (legacy) vs ArrayDeque ==
+Stack      setelah push 1,2,3 : [1, 2, 3]   (iterasi dari DASAR ke puncak)
+ArrayDeque setelah push 1,2,3 : [3, 2, 1]   (iterasi dari PUNCAK ke dasar)
+Stack setelah add(0, 99)      : [99, 1, 2, 3]   <- operasi non-stack lolos
+Stack.get(1)                  : 1   <- akses acak lolos
+ArrayDeque: peek()=3, pop()=3, sisa=[2, 1]
+kosong.poll() / peek()        : null / null   (null, tanpa exception)
+kosong.pop()                  : NoSuchElementException
+kosong.push(null)             : NullPointerException (ArrayDeque menolak null)

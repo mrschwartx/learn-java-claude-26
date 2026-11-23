@@ -1,0 +1,15 @@
+Kebersihan (2 produk)
+  Sampo 170ml          Rp  24.000
+  Sabun Mandi          Rp   7.500
+Makanan (3 produk)
+  Roti Tawar           Rp  18.500
+  Keripik Singkong     Rp  15.000
+  Mie Instan           Rp   3.500
+Minuman (3 produk)
+  Kopi Arabika 250g    Rp  85.000
+  Teh Hijau            Rp  32.000
+  Air Mineral 1,5L     Rp   6.000
+
+Total di semua grup = 8 (dari 8 produk)
+Kunci cara computeIfAbsent = [Kebersihan, Makanan, Minuman]
+Kunci cara get/null/put    = [Kebersihan, Makanan, Minuman]

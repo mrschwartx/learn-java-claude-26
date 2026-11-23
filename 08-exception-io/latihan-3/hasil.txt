@@ -1,0 +1,46 @@
+
+== 1. Normal (tidak ada yang gagal) ==
+buka A
+buka B
+-- badan try --
+tutup B
+tutup A
+
+== 2. Badan try gagal, close() B juga gagal ==
+buka A
+buka B
+-- badan try --
+tutup B
+tutup A
+Ditangkap : kegagalan utama
+Suppressed: gagal menutup B
+
+== 3. Badan try sukses, tetapi close() B gagal ==
+buka A
+buka B
+-- badan try --
+tutup B
+tutup A
+Ditangkap : gagal menutup B
+
+== 4. Badan try gagal, close() A dan B sama-sama gagal ==
+buka A
+buka B
+-- badan try --
+tutup B
+tutup A
+Ditangkap : kegagalan utama
+Suppressed: gagal menutup B
+Suppressed: gagal menutup A
+
+== 5. Constructor B gagal saat dibuka: A tetap ditutup ==
+buka A
+buka B GAGAL
+tutup A
+Ditangkap : gagal membuka B
+
+== 6. Pembanding: finally manual MENIMPA exception utama ==
+buka X
+tutup X
+Ditangkap : gagal menutup X   <- penyebab sebenarnya HILANG
+Suppressed: []

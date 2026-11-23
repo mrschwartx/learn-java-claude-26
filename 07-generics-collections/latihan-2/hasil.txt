@@ -1,0 +1,9 @@
+p        = (umur, 25)
+p.tukar()= (25, umur)
+tukar dua kali sama dengan asal? true
+angka=25, teks=umur
+
+min(7, 3)            = 3
+min("kiwi", "apel")  = apel
+min(2.5, 2.4)        = 2.4
+min("a", "a")        = a

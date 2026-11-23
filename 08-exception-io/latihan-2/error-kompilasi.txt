@@ -1,0 +1,4 @@
+TidakDitangani.java:14: error: unreported exception StokHabisException; must be caught or declared to be thrown
+        new Gudang().ambil("beras", 1);          // tidak ada try/catch dan main tidak punya throws
+                          ^
+1 error

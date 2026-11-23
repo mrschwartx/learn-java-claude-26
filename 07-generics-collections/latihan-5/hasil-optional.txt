@@ -1,0 +1,5 @@
+1) Optional bernilai null -> NullPointerException saat dipakai
+2) Serialisasi gagal: NotSerializableException: java.util.Optional
+3) getter Optional      : Optional.empty
+   dengan nilai          : Optional[dewi@contoh.com]
+   serialisasi ProfilBaik: berhasil

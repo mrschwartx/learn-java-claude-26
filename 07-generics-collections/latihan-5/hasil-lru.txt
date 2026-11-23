@@ -1,0 +1,13 @@
+== Mode URUTAN-AKSES (LRU) ==
+put(a)  -> [a]
+put(b)  -> [a, b]
+get(a)  -> [b, a]
+put(c)  -> [a, c]   isi akhir: {a=1, c=3}
+contains a? true, contains b? false
+
+== Mode URUTAN-PENYISIPAN (FIFO) ==
+put(a)  -> [a]
+put(b)  -> [a, b]
+get(a)  -> [a, b]
+put(c)  -> [b, c]   isi akhir: {b=2, c=3}
+contains a? false, contains b? true

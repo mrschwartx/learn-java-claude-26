@@ -1,0 +1,20 @@
+== A. Chaining: IOException dibungkus LaporanException ==
+Pesan domain : Gagal membuat laporan penjualan dari data-penjualan-tidak-ada.csv
+getCause()   : java.nio.file.NoSuchFileException: data-penjualan-tidak-ada.csv
+Rantai       : LaporanException <- disebabkan oleh <- NoSuchFileException
+Stack trace (hanya frame milik program ini; frame JDK dan launcher dibuang agar stabil antar versi):
+  LaporanException: Gagal membuat laporan penjualan dari data-penjualan-tidak-ada.csv
+  at Laporan.buat(DemoLaporan.java:81)
+  at DemoLaporan.main(DemoLaporan.java:15)
+  Caused by: java.nio.file.NoSuchFileException: data-penjualan-tidak-ada.csv
+  at Laporan.buat(DemoLaporan.java:79)
+
+== B. Akibat menelan exception (catch kosong) ==
+Hasil laporan: []   <- tampak 'sukses', padahal file tidak pernah terbaca
+Pemanggil mengira tidak ada penjualan; penyebab sebenarnya tidak meninggalkan jejak apa pun.
+
+== C. Penanganan di BATAS terluar: catch (Exception) per tugas ==
+OK    laporan-1
+GAGAL laporan-rusak -> IllegalStateException: data laporan-rusak tidak konsisten
+OK    laporan-3
+Selesai: 2 dari 3 tugas berhasil

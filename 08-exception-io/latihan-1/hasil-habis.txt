@@ -1,0 +1,6 @@
+Masukkan umur:
+  Ditolak -> umur harus berupa bilangan bulat, bukan "abc"
+Masukkan umur:
+  Ditolak -> umur harus berupa bilangan bulat, bukan "12x"
+Masukkan umur:
+Masukan berakhir sebelum ada umur yang valid.

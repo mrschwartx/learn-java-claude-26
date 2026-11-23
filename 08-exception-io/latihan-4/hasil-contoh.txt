@@ -1,0 +1,4 @@
+Isi ringkasan:
+  jumlah baris   : 6
+  jumlah kata    : 34
+  kata terpanjang: internasionalisasi (18 huruf, baris 4)

@@ -1,0 +1,21 @@
+MinSalah.java:8: error: method min in class MinSalah cannot be applied to given types;
+        Object o = min(new Object(), new Object());     // Object bukan Comparable
+                   ^
+  required: T,T
+  found:    Object,Object
+  reason: inference variable T has incompatible bounds
+    upper bounds: Comparable<T>
+    lower bounds: Object
+  where T is a type-variable:
+    T extends Comparable<T> declared in method <T>min(T,T)
+MinSalah.java:9: error: method min in class MinSalah cannot be applied to given types;
+        Object campur = min(1, "satu");                  // Integer dan String tidak bisa disatukan
+                        ^
+  required: T,T
+  found:    int,String
+  reason: inference variable T has incompatible bounds
+    equality constraints: Integer,String
+    lower bounds: String,Integer
+  where T is a type-variable:
+    T extends Comparable<T> declared in method <T>min(T,T)
+2 errors

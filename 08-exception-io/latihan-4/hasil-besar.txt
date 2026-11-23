@@ -1,0 +1,5 @@
+File besar dibuat: 20100019 byte
+Isi ringkasan:
+  jumlah baris   : 300000
+  jumlah kata    : 2400001
+  kata terpanjang: internasionalisasi (18 huruf, baris 250000)

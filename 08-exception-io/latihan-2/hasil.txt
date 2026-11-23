@@ -1,0 +1,12 @@
+== Versi CHECKED ==
+Ambil 4 beras, sisa 6
+Ambil 4 beras, sisa 2
+Ditangani: stok beras hanya 2, diminta 4 (kurang 2)
+Argumen salah: barang tidak dikenal: emas
+
+== Versi UNCHECKED ==
+gula diambil 2, sisa 1
+Ditangani (opsional): stok gula hanya 1, diminta 5
+Exception in thread "main" StokHabisRuntimeException: stok gula hanya 1, diminta 99
+	at GudangRuntime.ambil(DemoGudang.java:79)
+	at DemoGudang.main(DemoGudang.java:35)
