@@ -1,0 +1,35 @@
+== A. start() lalu join() ==
+Tepat setelah start(): A hidup? true, B hidup? true   (main TIDAK menunggu, ia langsung lanjut)
+  [live] A (thread thread-A) : 1
+  [live] B (thread thread-B) : 1
+  [live] B (thread thread-B) : 2
+  [live] A (thread thread-A) : 2
+  [live] B (thread thread-B) : 3
+  [live] A (thread thread-A) : 3
+  [live] B (thread thread-B) : 4
+  [live] A (thread thread-A) : 4
+  [live] B (thread thread-B) : 5
+  [live] A (thread thread-A) : 5
+selesai
+Status: A=TERMINATED, B=TERMINATED
+Urutan milik A: [1, 2, 3, 4, 5]
+Urutan milik B: [1, 2, 3, 4, 5]
+Jumlah catatan: 10
+
+== B. run() alih-alih start() ==
+  [live] A (thread main) : 1
+  [live] A (thread main) : 2
+  [live] A (thread main) : 3
+  [live] A (thread main) : 4
+  [live] A (thread main) : 5
+  [live] B (thread main) : 1
+  [live] B (thread main) : 2
+  [live] B (thread main) : 3
+  [live] B (thread main) : 4
+  [live] B (thread main) : 5
+selesai
+Status c: NEW (tidak pernah di-start)
+Urutan seluruhnya: [A:1, A:2, A:3, A:4, A:5, B:1, B:2, B:3, B:4, B:5]
+
+[BERVARIASI] waktu start()+join(): 1014 ms   | waktu run(): 2003 ms
+run() sekitar dua kali lebih lama (berurutan, bukan bersamaan)? true

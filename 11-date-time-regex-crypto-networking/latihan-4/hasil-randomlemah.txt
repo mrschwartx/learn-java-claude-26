@@ -1,0 +1,5 @@
+Random(42) #1: -1170105035, 234785527, -1360544799
+Random(42) #2: -1170105035, 234785527, -1360544799
+Identik, jadi siapa pun yang tahu/menebak seed (mis. waktu start) dapat memprediksi 'salt'/token.
+
+SecureRandom dua instans berbeda: false  (tak dapat diulang/ditebak)

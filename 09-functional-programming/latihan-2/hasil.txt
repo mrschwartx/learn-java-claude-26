@@ -1,0 +1,25 @@
+== petakan: satu fungsi, banyak perilaku ==
+panjang      : [4, 4, 6, 3]
+huruf besar  : [APEL, KIWI, MANGGA, PIR]
+kuadrat      : [9, 64, 225, 484, 49]
+jadi Produk  : [Produk[nama=apel, harga=4000], Produk[nama=kiwi, harga=4000], Produk[nama=mangga, harga=6000], Produk[nama=pir, harga=3000]]
+tipe berubah : [ganjil, genap, ganjil, genap, ganjil]
+list kosong  : []
+
+== cariPertama ==
+genap pertama     : 8
+> 20 pertama      : 22
+> 100 (tak ada)   : -1
+berawalan 'm'     : mangga
+berawalan 'z'     : (tidak ada)
+list kosong       : 0
+
+== Cadangan eager vs malas (Supplier) ==
+Eager, tetapi elemen ditemukan:
+    (menghitung cadangan yang mahal...)
+  hasil = 22
+Malas, elemen ditemukan:
+  hasil = 22
+Malas, elemen tidak ditemukan:
+    (menghitung cadangan yang mahal...)
+  hasil = -1

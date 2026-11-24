@@ -1,0 +1,22 @@
+Rapat 24 Nov 2026, 10.00 Asia/Jakarta (Instant = 2026-11-24T03:00:00Z)
+  Asia/Jakarta      -> Sel 24 Nov 2026 10:00 UTC+07:00  [standar]
+  Asia/Makassar     -> Sel 24 Nov 2026 11:00 UTC+08:00  [standar]
+  Asia/Jayapura     -> Sel 24 Nov 2026 12:00 UTC+09:00  [standar]
+  America/New_York  -> Sen 23 Nov 2026 22:00 UTC-05:00  [standar]
+
+Rapat 24 Jul 2026, 10.00 Asia/Jakarta (Instant = 2026-07-24T03:00:00Z)
+  Asia/Jakarta      -> Jum 24 Jul 2026 10:00 UTC+07:00  [standar]
+  Asia/Makassar     -> Jum 24 Jul 2026 11:00 UTC+08:00  [standar]
+  Asia/Jayapura     -> Jum 24 Jul 2026 12:00 UTC+09:00  [standar]
+  America/New_York  -> Kam 23 Jul 2026 23:00 UTC-04:00  [DST]
+
+LocalDateTime tersimpan: 2026-11-24T10:00  <- 10.00 di mana? tidak diketahui
+  ditafsirkan di Asia/Jakarta -> Instant 2026-11-24T03:00:00Z
+  ditafsirkan di America/New_York -> Instant 2026-11-24T15:00:00Z
+Instant tersimpan      : 2026-11-24T03:00:00Z  <- satu titik waktu, tak ambigu
+  ditampilkan WIB      : 10:00
+  ditampilkan New York : 22:00
+
+Peralihan DST New York:
+  08 Mar 2026 02:30 (tidak ada) -> 2026-03-08T03:30-04:00[America/New_York]
+  01 Nov 2026 01:30 (muncul 2x) -> 2026-11-01T01:30-04:00[America/New_York]  (default: offset pertama)

@@ -1,0 +1,6 @@
+Ambigu.java:6: error: incompatible types: invalid method reference
+        Function<Integer, String> f = Integer::toString;
+                                      ^
+    reference to toString is ambiguous
+      both method toString(int) in Integer and method toString() in Integer match
+1 error

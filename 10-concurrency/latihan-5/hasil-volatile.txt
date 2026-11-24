@@ -1,0 +1,7 @@
+[BERVARIASI] hasil varian 'biasa' bergantung JIT/CPU; di JVM HotSpot loop kosong umumnya TIDAK berhenti
+flag biasa         -> worker berhenti dalam 1 detik? false
+flag volatile      -> worker berhenti dalam 1 detik? true
+AtomicBoolean      -> worker berhenti dalam 1 detik? true
+
+[BERVARIASI] varian biasa berhenti? false
+Pembaca melihat data = 42 (dijamin 42 oleh happens-before)

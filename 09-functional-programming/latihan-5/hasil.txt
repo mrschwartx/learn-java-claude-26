@@ -1,0 +1,39 @@
+== Frekuensi (jumlah menurun, lalu abjad) ==
+java -> 3
+belajar -> 2
+dan -> 2
+itu -> 2
+kuat -> 1
+menyenangkan -> 1
+terus -> 1
+Hasil sama dengan versi loop Modul 7? true
+TreeMap: {belajar=2, dan=2, itu=2, java=3, kuat=1, menyenangkan=1, terus=1}
+
+== LAZY: tidak ada yang jalan sebelum operasi terminal ==
+Pipeline dibangun; belum ada apa pun tercetak di atas.
+Terminal: limit(2).toList() ->
+  sumber   1
+  filter   1
+  sumber   2
+  filter   2
+  map      2
+  sumber   3
+  filter   3
+  sumber   4
+  filter   4
+  map      4
+Hasil: [20, 40]   (elemen 5..10 tidak pernah disentuh: short-circuit)
+
+== SEKALI PAKAI ==
+pemakaian pertama: [a, b]
+pemakaian kedua  : IllegalStateException: stream has already been operated upon or closed
+stream baru dari sumber yang sama: 2 lalu [a, b]
+
+== PARALLEL: yang pasti (deterministik) ==
+toList() pada stream paralel mempertahankan urutan? true
+jumlah 1..1000 sequential/parallel sama? true
+
+== PARALLEL: yang merugikan (hasil di bawah BERVARIASI antar eksekusi/mesin) ==
+[BERVARIASI] CPU tersedia = 2
+[BERVARIASI] forEach(list::add) paralel, 50 percobaan: ukuran salah 40x, melempar exception 4x, benar 6x
+[BERVARIASI] reduce pengurangan  sequential=-5050, parallel=0  (sama? false)

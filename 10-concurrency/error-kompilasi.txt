@@ -1,0 +1,10 @@
+### javac latihan-1/contoh-error/TanpaTry.java
+latihan-1/contoh-error/TanpaTry.java:3: error: unreported exception InterruptedException; must be caught or declared to be thrown
+        Thread.sleep(100);   // InterruptedException adalah checked exception
+                    ^
+1 error
+### javac latihan-4/contoh-error/LambdaBerubah.java
+latihan-4/contoh-error/LambdaBerubah.java:6: error: local variables referenced from a lambda expression must be final or effectively final
+        CompletableFuture.runAsync(() -> total++).join();   // variabel lokal di lambda harus effectively final
+                                         ^
+1 error

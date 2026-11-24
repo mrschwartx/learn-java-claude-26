@@ -1,0 +1,4 @@
+Hash andi == hash budi? true  (bocor: keduanya memakai password SAMA)
+andi   -> TERBONGKAR: password123
+budi   -> TERBONGKAR: password123
+citra  -> tidak ada di kamus

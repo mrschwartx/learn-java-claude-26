@@ -1,0 +1,13 @@
+### javac latihan-1/contoh-error/KonstruktorPrivat.java
+latihan-1/contoh-error/KonstruktorPrivat.java:5: error: constructor LocalDate in class LocalDate cannot be applied to given types;
+        LocalDate d = new LocalDate();   // class java.time dibuat lewat factory: of(), now(), parse()
+                      ^
+  required: int,int,int
+  found:    no arguments
+  reason: actual and formal argument lists differ in length
+1 error
+### javac latihan-4/contoh-error/TanpaThrows.java
+latihan-4/contoh-error/TanpaThrows.java:5: error: unreported exception NoSuchAlgorithmException; must be caught or declared to be thrown
+        MessageDigest md = MessageDigest.getInstance("SHA-256");   // NoSuchAlgorithmException = checked
+                                                    ^
+1 error

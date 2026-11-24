@@ -1,0 +1,15 @@
+Diharapkan: 8 x 100000 = 800000
+[BERVARIASI] CPU tersedia: 2
+
+[BERVARIASI] TidakAman     benar 1/5 ronde, hasil: [751068, 290494, 775849, 753457, 800000]
+[BERVARIASI] TidakAman     median waktu: 20 ms
+[BERVARIASI] volatile      benar 0/5 ronde, hasil: [767200, 619168, 613787, 396286, 475904]
+[BERVARIASI] volatile      median waktu: 20 ms
+synchronized  benar 5/5 ronde, hasil: [800000, 800000, 800000, 800000, 800000]
+[BERVARIASI] synchronized  median waktu: 137 ms
+AtomicInteger benar 5/5 ronde, hasil: [800000, 800000, 800000, 800000, 800000]
+[BERVARIASI] AtomicInteger median waktu: 34 ms
+ReentrantLock benar 5/5 ronde, hasil: [800000, 800000, 800000, 800000, 800000]
+[BERVARIASI] ReentrantLock median waktu: 19 ms
+LongAdder     benar 5/5 ronde, hasil: [800000, 800000, 800000, 800000, 800000]
+[BERVARIASI] LongAdder     median waktu: 5 ms

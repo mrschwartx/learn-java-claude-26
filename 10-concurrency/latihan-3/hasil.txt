@@ -1,0 +1,17 @@
+Bilangan prima di bawah 5,000,000
+[BERVARIASI] CPU tersedia: 2
+Satu thread            : 348513 prima
+4 bagian, pool 4 thread: 348513 prima
+40 potongan, pool 4    : 348513 prima
+Ketiganya sama? true
+
+Jumlah prima per bagian (4 bagian sama lebar):
+  [        0 .. 1,250,000) : 96,469 prima
+  [1,250,000 .. 2,500,000) : 86,603 prima
+  [2,500,000 .. 3,750,000) : 83,645 prima
+  [3,750,000 .. 5,000,000) : 81,796 prima
+
+[BERVARIASI] waktu per bagian (ms): [166, 269, 294, 273]
+[BERVARIASI] satu thread  : 573 ms
+[BERVARIASI] 4 bagian     : 307 ms  (speed-up 1.87x)
+[BERVARIASI] 40 potongan  : 301 ms  (speed-up 1.90x)

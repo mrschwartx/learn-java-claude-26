@@ -1,0 +1,19 @@
+== 1. /halo dan /waktu paralel ==
+  /halo    OK     {"pesan":"Halo dari server Java"}
+  /waktu   OK     {"waktu":"2026-11-24T00:17:00Z"}
+  -> 2 dari 2 panggilan sukses
+
+== 2. Ditambah /rusak (500) dan path tak terdaftar (404) ==
+  /halo    OK     {"pesan":"Halo dari server Java"}
+  /waktu   OK     {"waktu":"2026-11-24T00:17:00Z"}
+  /rusak   GAGAL  status 500
+  /tidak-ada GAGAL  status 404
+  -> 2 dari 4 panggilan sukses
+
+== 3. /lambat (server tidur 3 detik) dengan timeout 400 ms ==
+  /halo    OK     {"pesan":"Halo dari server Java"}
+  /lambat  GAGAL  timeout
+  /waktu   OK     {"waktu":"2026-11-24T00:17:00Z"}
+  -> 2 dari 3 panggilan sukses
+  seluruh gabungan selesai jauh sebelum 3 detik? true
+[BERVARIASI] waktu gabungan dengan timeout: 404 ms

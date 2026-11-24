@@ -1,0 +1,19 @@
+"  bUdI   sAnToSo "        -> "Budi Santoso"   (andThen == compose: true)
+"ANI"                      -> "Ani"   (andThen == compose: true)
+"  rina  kartika  dewi"    -> "Rina Kartika Dewi"   (andThen == compose: true)
+"x"                        -> "X"   (andThen == compose: true)
+""                         -> ""   (andThen == compose: true)
+Urutan salah (kapital lalu lowercase): "budi santoso"
+
+== Validator: tiga Predicate digabung dengan and ==
+"Budi"         valid=true   kosong?false angka?false pendek?false
+"Jo"           valid=false  kosong?false angka?false pendek?true 
+""             valid=false  kosong?true  angka?false pendek?true 
+"   "          valid=false  kosong?true  angka?false pendek?true 
+"Ani2"         valid=false  kosong?false angka?true  pendek?false
+"x1y2"         valid=false  kosong?false angka?true  pendek?false
+"Siti Aminah"  valid=true   kosong?false angka?false pendek?false
+null           valid=false  null -> and berhenti di tidakKosong (short-circuit); aturan lain tidak dipanggil
+
+negate  -> "Jo" bermasalah? true
+or      -> "Ani2" pendek atau berangka? true

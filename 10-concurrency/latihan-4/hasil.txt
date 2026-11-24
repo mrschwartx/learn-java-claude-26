@@ -1,0 +1,21 @@
+== 1. Semua berhasil ==
+Total = 150 USD x 15.800 = Rp2.370.000
+
+== 2. Kurs gagal, tanpa exceptionally ==
+join() melempar : CompletionException
+penyebab asli   : java.lang.IllegalStateException: layanan kurs sedang mati
+
+== 3. exceptionally pada langkah kurs -> pakai kurs cadangan ==
+  tipe exception yang diterima exceptionally: CompletionException (penyebab: layanan kurs sedang mati)
+Total dengan kurs cadangan = Rp2.400.000  (150 x 16.000)
+
+== 4. exceptionally di ujung rantai -> fallback untuk total ==
+Total = -1  (-1 = 'tidak tersedia'; informasi harga ikut terbuang)
+
+== 5. handle(): satu tempat untuk sukses dan gagal ==
+gagal=false -> kurs=15800
+gagal=true -> gagal, pakai cadangan 16000
+
+== 6. Kurs lambat (2 detik), batas waktu 300 ms ==
+  fallback karena: TimeoutException
+Kurs yang dipakai = 16000; selesai jauh sebelum 2 detik? true

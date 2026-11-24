@@ -1,0 +1,6 @@
+1) static           : 42 | 42
+2) object tertentu  : Halo, Dunia | Halo, Dunia
+3) tipe (receiver)  : JAVA | JAVA
+4) constructor      : [] | []  (object berbeda? true)
+   StringBuilder::new: "" vs "isi"
+   receiver terikat  : AB  (isi objek ikut berubah; objeknya tetap sama)

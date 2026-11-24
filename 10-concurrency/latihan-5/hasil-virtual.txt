@@ -1,0 +1,11 @@
+Tugas selesai (pool 200 thread)   : 10000 dari 10000
+Tugas selesai (virtual thread)    : 10000 dari 10000
+Perkiraan teori pool : 10.000 / 200 = 50 gelombang x 1 detik = sekitar 50 detik
+Perkiraan teori virtual: semua tidur bersamaan = sekitar 1 detik
+
+[BERVARIASI] pool 200 thread : 50157 ms
+[BERVARIASI] virtual thread  : 1111 ms
+[BERVARIASI] rasio           : 45.1x
+Pool jauh lebih lambat (>20x)? true
+
+isVirtual()=true, isDaemon()=true (virtual thread selalu daemon)

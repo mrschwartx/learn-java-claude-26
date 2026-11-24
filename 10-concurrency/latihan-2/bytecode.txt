@@ -1,0 +1,27 @@
+public class Bytecode {
+  static int n;
+
+  static volatile int v;
+
+  public Bytecode();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  static void tambah();
+    Code:
+       0: getstatic     #7                  // Field n:I
+       3: iconst_1
+       4: iadd
+       5: putstatic     #7                  // Field n:I
+       8: return
+
+  static void tambahVolatile();
+    Code:
+       0: getstatic     #13                 // Field v:I
+       3: iconst_1
+       4: iadd
+       5: putstatic     #13                 // Field v:I
+       8: return
+}

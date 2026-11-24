@@ -1,0 +1,25 @@
+GET     /api/produk/12       200    35ms 
+POST    /api/pesanan         201   120ms 
+GET     /api/produk/999      404     8ms 
+GET     /api/laporan         500  2300ms <-- 5xx
+PUT     /api/pesanan/5       503    15ms <-- 5xx
+DELETE  /api/pengguna/3      204     4ms 
+GET     /api/bayar           502   900ms <-- 5xx
+TIDAK COCOK: rusak tanpa format
+TIDAK COCOK: GET api/tanpa-slash 200 1ms
+
+Baris cocok: 7 dari 9; berstatus 5xx: 3
+
+== ReDoS: jumlah pembacaan karakter oleh engine (deterministik, JDK 21) ==
+  n | ^((a+)+)+$ a^n+'!'     | ^(a+)+$ a^n+'!'        | ^a+$ a^n+'!'      
+  8 |         1,395          | 60                     | 11                
+ 10 |         5,617 (x4.0)   | 85                     | 13                
+ 12 |        22,511 (x4.0)   | 114                    | 15                
+ 14 |        90,093 (x4.0)   | 147                    | 17                
+ 16 |       360,427 (x4.0)   | 184                    | 19                
+ 18 |     1,441,769 (x4.0)   | 225                    | 21                
+ 20 |     5,767,143 (x4.0)   | 270                    | 23                
+ 22 |    23,068,645 (x4.0)   | 319                    | 25                
+Pola bersarang: tiap n naik 2, langkah naik sekitar 4x (2^n) -> eksponensial.
+Pola klasik ^(a+)+$ tumbuh linear di JDK ini (dimitigasi optimasi engine), tetapi mitigasi itu tidak menjangkau semua pola
+(mis. yang memakai backreference atau bersarang lebih dalam), jadi jangan mengandalkannya: batasi panjang input.

@@ -1,0 +1,13 @@
+(a) Gaji rata-rata per divisi:
+    Engineering Rp15.000.000,00
+    Keuangan    Rp10.000.000,00
+    Pemasaran   Rp9.166.666,67
+(b) Gaji tertinggi per divisi:
+    Engineering Citra (Rp18.000.000,00)
+    Keuangan    Eko (Rp11.000.000,00)
+    Pemasaran   Gita (Rp10.000.000,00)
+    cara toMap sama dengan groupingBy? true
+(c) Rata-rata keseluruhan: Rp11.562.500,00
+    Di atas rata-rata    : Andi, Budi, Citra
+    cocok dengan versi loop? true
+    tanpa pemenang -> "" (string kosong)
