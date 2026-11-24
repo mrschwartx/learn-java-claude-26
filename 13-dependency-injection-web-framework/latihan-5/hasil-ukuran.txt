@@ -1,0 +1,7 @@
+[BERVARIASI] ukuran jar stand-in: 4021 byte
+[BERVARIASI] waktu proses penuh stand-in (JVM start sampai exit, termasuk 4 request): 902 ms
+baris kode (tanpa baris kosong/komentar) javalin-demo/src/main/java/ProdukApp.java                      21
+baris kode (tanpa baris kosong/komentar) spring-halo/src/main/java/com/contoh/halo/HaloApplication.java 22
+baris kode (tanpa baris kosong/komentar) HaloStandIn.java                                               41
+baris kode (tanpa baris kosong/komentar) javalin-demo/pom.xml                                           17
+baris kode (tanpa baris kosong/komentar) spring-halo/pom.xml                                            11

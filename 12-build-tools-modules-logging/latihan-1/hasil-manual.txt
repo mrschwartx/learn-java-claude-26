@@ -1,0 +1,5 @@
+isi target/:
+./classes/com/contoh/app/App.class
+./demo-quickstart-1.0.0.jar
+--- jar dijalankan:
+Halo, Maven!

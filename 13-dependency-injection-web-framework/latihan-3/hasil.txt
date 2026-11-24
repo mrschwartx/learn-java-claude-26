@@ -1,0 +1,17 @@
+== Alasan 1: dependency TERSEMBUNYI. new ServiceField() tampak valid tetapi rusak ==
+  NullPointerException saat dipakai (bukan saat dibuat): objek 'setengah jadi' beredar
+  Constructor: gagal LANGSUNG saat dibuat jika dependency tidak diberikan
+
+== Alasan 2: tanpa container, field injection hanya bisa diisi lewat REFLECTION ==
+  Berhasil, tetapi harus membobol field private; dan field tidak bisa 'final': false
+  Pada ServiceCtor field 'final': true
+
+== Alasan 3: object selalu valid + mudah diuji; di bawah: uji ServiceCtor TANPA container ==
+  LULUS  repositori menerima 2 item
+  LULUS  urutan item benar
+  LULUS  notifikasi dikirim untuk tiap pesanan
+  LULUS  menolak dependency null saat dibuat
+  LULUS  kegagalan repo diteruskan
+  LULUS  notifikasi TIDAK terkirim bila simpan gagal
+
+Ringkasan: 6 lulus, 0 gagal

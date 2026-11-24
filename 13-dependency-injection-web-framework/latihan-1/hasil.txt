@@ -1,0 +1,18 @@
+== 1. Container LAMA: dua implementasi didaftarkan, urutan menentukan pemenang (diam-diam) ==
+  [repo] disimpan: buku
+  [email] Pesanan buku dibayar via kartu kredit untuk buku
+  [repo] disimpan: buku
+  [email] Pesanan buku dibayar via transfer bank untuk buku
+
+== 2. Container BARU: ambiguitas ditolak dengan pesan jelas ==
+  Error: Ambigu: 2 bean untuk Pembayaran [PembayaranKartu, PembayaranTransfer]; beri @Utama pada satu, atau pakai @Nama
+
+== 3. Perbaikan A (~@Qualifier): parameter meminta @Nama("transfer") ==
+  transfer bank untuk laptop
+
+== 4. Perbaikan B (~@Primary): satu implementasi ditandai @Utama ==
+  [repo] disimpan: buku
+  [email] Pesanan buku dibayar via dompet digital untuk buku
+
+== 5. Nama tak ada ==
+  Error: Tidak ada bean untuk Pembayaran bernama 'transfer'

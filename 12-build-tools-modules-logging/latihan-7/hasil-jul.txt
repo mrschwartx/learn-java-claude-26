@@ -1,0 +1,4 @@
+INFO    Aplikasi mulai
+FINE    Detail diagnostik
+WARNING Pengguna andi mencoba login gagal 3 kali
+SEVERE  Gagal parse

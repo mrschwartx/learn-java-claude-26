@@ -1,0 +1,5 @@
+GET /halo -> 200 Halo dari JDK HttpServer
+GET /produk/1 -> 200 {"id":1,"nama":"Kopi"}
+GET /produk/99 -> 404
+GET /produk/abc -> 400 ID harus berupa angka
+[BERVARIASI] waktu membuat+menyalakan server di dalam JVM yang sudah hidup: 37 ms

@@ -1,0 +1,3 @@
+Files latihan-2/demo-maven/pom.xml and latihan-6/demo-maven-log4j2/pom.xml differ
+Only in latihan-6/demo-maven-log4j2/src/main/resources: log4j2.xml
+Only in latihan-2/demo-maven/src/main/resources: logback.xml

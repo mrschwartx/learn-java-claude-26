@@ -1,0 +1,33 @@
+### A. tanpa backend
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+SLF4J: Failed to load class "org.slf4j.impl.StaticMDCBinder".
+SLF4J: Defaulting to no-operation MDCAdapter implementation.
+SLF4J: See http://www.slf4j.org/codes.html#no_static_mdc_binder for further details.
+### B. backend milik Maven (SimpleLogger)
+[main] INFO com.contoh.app.App - Aplikasi mulai
+[main] INFO com.contoh.app.App - Memproses pesanan-42
+[main] INFO com.contoh.app.App - Memproses pesanan-0
+[main] ERROR com.contoh.app.App - Gagal memproses pesanan-0
+java.lang.IllegalArgumentException: id tidak valid: pesanan-0
+    at com.contoh.app.App.proses (App.java:26)
+    at com.contoh.app.App.main (App.java:16)
+### C. backend-mini buatan sendiri (JSON)
+{"level":"INFO","logger":"App","requestId":null,"msg":"Aplikasi mulai"}
+{"level":"INFO","logger":"App","requestId":"req-001","msg":"Memproses pesanan-42"}
+{"level":"INFO","logger":"App","requestId":"req-001","msg":"Memproses pesanan-0"}
+{"level":"ERROR","logger":"App","requestId":"req-001","msg":"Gagal memproses pesanan-0"}
+  stack: java.lang.IllegalArgumentException: id tidak valid: pesanan-0
+{"level":"DEBUG","logger":"App","requestId":null,"msg":"Pesan DEBUG ini hanya muncul jika level DEBUG aktif"}
+### D. dua backend sekaligus
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [file:/tmp/tmp.l3wDNyEZer/backend/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/opt/apache-maven-3.9.11/lib/maven-slf4j-provider-3.9.11.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.slf4j.impl.StaticLoggerBinder$$Lambda/0x00007fe194001ac8]
+{"level":"INFO","logger":"App","requestId":null,"msg":"Aplikasi mulai"}
+{"level":"INFO","logger":"App","requestId":"req-001","msg":"Memproses pesanan-42"}
+{"level":"INFO","logger":"App","requestId":"req-001","msg":"Memproses pesanan-0"}
+{"level":"ERROR","logger":"App","requestId":"req-001","msg":"Gagal memproses pesanan-0"}
+### App.class sama untuk semua skenario (sha256 depan): f8dbfed72fe6d08b

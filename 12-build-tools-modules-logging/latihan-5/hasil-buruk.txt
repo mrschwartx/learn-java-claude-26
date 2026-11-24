@@ -1,0 +1,20 @@
+== 1. Konkatenasi vs parameterized (level DEBUG NONAKTIF) ==
+  konkatenasi : toString() dipanggil 1000 kali dari 1000 log
+  parameterized: toString() dipanggil 0 kali dari 1000 log
+  argumen hasil perhitungan mahal + guard isDebugEnabled(): dihitung 0 kali
+
+== 2. Data sensitif ==
+{"level":"INFO","logger":"LogBuruk","requestId":null,"msg":"BURUK login user=andi password=rahasia123 kartu=1234567812345678"}
+{"level":"INFO","logger":"LogBuruk","requestId":null,"msg":"BAIK  login user=andi kartu=****5678"}
+
+== 3. Log-dan-lempar-ulang di setiap lapisan ==
+-- BURUK (1 kegagalan -> 3 entri ERROR):
+{"level":"ERROR","logger":"LogBuruk","requestId":null,"msg":"repo gagal"}
+  stack: java.lang.IllegalStateException: DB mati
+{"level":"ERROR","logger":"LogBuruk","requestId":null,"msg":"service gagal"}
+  stack: java.lang.IllegalStateException: DB mati
+{"level":"ERROR","logger":"LogBuruk","requestId":null,"msg":"controller gagal"}
+  stack: java.lang.IllegalStateException: DB mati
+-- BAIK (1 kegagalan -> 1 entri, penyebab asli tetap ada lewat cause):
+{"level":"ERROR","logger":"LogBuruk","requestId":null,"msg":"Permintaan gagal"}
+  stack: java.lang.IllegalStateException: pesanan gagal disimpan

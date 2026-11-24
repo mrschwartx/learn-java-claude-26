@@ -1,0 +1,8 @@
+== Container LAMA, A <-> B ==
+  StackOverflowError (tanpa petunjuk bean mana yang bermasalah)
+
+== Container BARU ==
+  Dependensi melingkar: A -> B -> A
+  Dependensi melingkar: C -> D -> E -> C
+  Tanpa siklus tetap normal; pengambilan ulang tidak salah dianggap siklus: OK
+  Container pulih setelah gagal, bean lain tetap bisa dibuat: true

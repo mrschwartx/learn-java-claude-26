@@ -1,0 +1,5 @@
+mods/com.contoh.app/com/contoh/app/App.java:4: error: package com.contoh.util.internal is not visible
+import com.contoh.util.internal.Rahasia;   // <- ERROR: package tidak di-export
+                      ^
+  (package com.contoh.util.internal is declared in module com.contoh.util, which does not export it)
+1 error

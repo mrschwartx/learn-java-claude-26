@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_DIR">logs</Property>
+        <Property name="POLA">%d{HH:mm:ss.SSS} %-5level [%t] [%X{requestId}] %c{1} - %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- Console: teks untuk pengembangan lokal. Untuk log JSON, ganti isi dengan baris JsonTemplateLayout di bawah. -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${POLA}"/>
+            <!-- <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/> -->
+        </Console>
+
+        <RollingFile name="File" fileName="${LOG_DIR}/app.log"
+                     filePattern="${LOG_DIR}/app-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="${POLA}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>               <!-- rotasi harian -->
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="7"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.contoh" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+</Configuration>

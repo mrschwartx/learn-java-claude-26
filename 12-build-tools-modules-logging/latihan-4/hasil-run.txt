@@ -1,0 +1,6 @@
+Halo, Java! [dibuat oleh modul util]
+Modul App   : com.contoh.app (named=true)
+Modul Sapa  : com.contoh.util
+util meng-export com.contoh.util ke app?          true
+util meng-export com.contoh.util.internal ke app? false
+Reflection ke internal ditolak: IllegalAccessException - class com.contoh.app.App (in module com.contoh.app) cannot access class com.contoh.util.internal.Rahasia (in module com.contoh.util) because module com.contoh.util does not export com.contoh.util.internal to module com.contoh.app

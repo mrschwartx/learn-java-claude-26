@@ -1,0 +1,16 @@
+module(name = "demo_bazel", version = "0.1.0")
+
+bazel_dep(name = "rules_java", version = "<versi terbaru>")           # cek https://registry.bazel.build
+bazel_dep(name = "rules_jvm_external", version = "<versi terbaru>")
+bazel_dep(name = "contrib_rules_jvm", version = "<versi terbaru>")
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.install(
+    artifacts = [
+        "org.slf4j:slf4j-api:2.0.17",
+        "ch.qos.logback:logback-classic:1.5.18",
+        "org.junit.jupiter:junit-jupiter-api:5.11.4",
+    ],
+    repositories = ["https://repo1.maven.org/maven2"],
+)
+use_repo(maven, "maven")

@@ -1,0 +1,11 @@
+com.contoh.app
+ [file:///home/claude/course/learn-java-claude-26-main/12-build-tools-modules-logging/latihan-4/out/com.contoh.app/]
+   requires com.contoh.util
+   requires mandated java.base (@21.0.13.0.3)
+com.contoh.app -> com.contoh.util
+com.contoh.app -> java.base
+   com.contoh.app                                     -> com.contoh.util                                    com.contoh.util
+   com.contoh.app                                     -> java.io                                            java.base
+   com.contoh.app                                     -> java.lang                                          java.base
+   com.contoh.app                                     -> java.lang.invoke                                   java.base
+   com.contoh.app                                     -> java.lang.reflect                                  java.base

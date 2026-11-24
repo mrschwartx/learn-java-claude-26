@@ -1,0 +1,12 @@
+  LULUS  POST valid -> 201
+  LULUS  isi respons {"id":1,"nama":"Kopi"}
+  LULUS  service benar-benar menyimpan produk
+  LULUS  POST nama kosong -> 400
+  LULUS  POST nama spasi saja -> 400
+  LULUS  POST tanpa field nama -> 400
+  LULUS  POST bukan JSON -> 400
+  LULUS  service TIDAK dipanggil untuk 4 permintaan tidak valid
+  LULUS  dengan fake service: id 777 dari fake
+  LULUS  fake dipanggil tepat 1 kali (yang valid)
+
+Ringkasan: 10 lulus, 0 gagal

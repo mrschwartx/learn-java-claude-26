@@ -1,0 +1,2 @@
+[BERVARIASI] runtime-mini: 53308 KB (lib/modules 25368 KB)
+[BERVARIASI] JDK penuh   : 293188 KB (lib/modules 137808 KB)

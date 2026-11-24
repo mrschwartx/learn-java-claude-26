@@ -1,0 +1,19 @@
+  LULUS  GET daftar kosong -> 200 []
+  LULUS  POST valid -> 201 {"id":1,"nama":"Kopi Gayo","harga":25000}
+  header Location = /api/produk/1
+  LULUS  GET /1 -> 200 {"id":1,"nama":"Kopi Gayo","harga":25000}
+  LULUS  GET /99 -> 404
+  LULUS  POST nama kosong & harga negatif -> 400 {"status":400,"detail":"Data tidak valid","galat":["nama: nama wajib diisi","harga: harga harus positif"]}
+  LULUS  POST nama 51 karakter (aturan baru) -> 400 {"status":400,"detail":"Data tidak valid","galat":["nama: nama maksimal 50 karakter"]}
+  LULUS  POST nama tepat 50 karakter -> 201 {"id":2,"nama":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx","harga":100}
+  LULUS  POST tanpa field harga -> 400 {"status":400,"detail":"Data tidak valid","galat":["harga: harga harus positif"]}
+  LULUS  PUT /1 valid -> 200 {"id":1,"nama":"Kopi Toraja","harga":30000}
+  LULUS  GET /1 setelah PUT -> 200 {"id":1,"nama":"Kopi Toraja","harga":30000}
+  LULUS  PUT /99 (tidak ada) -> 404
+  LULUS  PUT /1 tidak valid -> 400 {"status":400,"detail":"Data tidak valid","galat":["nama: nama wajib diisi","harga: harga harus positif"]}
+  LULUS  DELETE /1 -> 204
+  LULUS  DELETE /1 lagi -> 404
+  LULUS  GET /1 setelah DELETE -> 404
+  LULUS  GET /abc (bukan angka) -> 400
+
+Ringkasan: 16 lulus, 0 gagal
