@@ -1,0 +1,8 @@
+(a) 1.000 executeUpdate, autocommit : 1000 baris tersimpan
+(b) 1.000 executeUpdate, satu transaksi: 1000 baris tersimpan
+(c) addBatch + executeBatch (1 transaksi): 1000 baris tersimpan
+
+[BERVARIASI] (a) autocommit satu-satu :    390 ms
+[BERVARIASI] (b) satu transaksi      :     41 ms  (9.5x lebih cepat dari a)
+[BERVARIASI] (c) batch               :     27 ms  (14.4x lebih cepat dari a)
+[BERVARIASI] a lebih lambat dari b dan c? true

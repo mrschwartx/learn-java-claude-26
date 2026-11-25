@@ -1,0 +1,8 @@
+Data: 20 pelanggan di Surabaya, masing-masing 3 pesanan (60 pesanan)
+
+N+1 (1 query pelanggan + 1 query pesanan per pelanggan) : total=1200000, query=21
+JOIN FETCH / EntityGraph (1 query join)                 : total=1200000, query=1
+Batch fetching (pesanan WHERE pelanggan_id = ANY(...), 20 id per query): total=1200000, query=2
+Ketiganya menghasilkan total sama? true
+
+Dengan 1.000 pelanggan N+1 menjadi 1.001 query; JOIN tetap 1; batch size 20 menjadi 1 + 50 = 51 query.

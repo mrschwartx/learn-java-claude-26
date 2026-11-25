@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/toko
+    username: belajar
+    password: rahasia
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate          # skema dikelola Flyway; Hibernate hanya memeriksa. JANGAN 'update' di production.
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 20   # batch fetching: lazy-load mengambil 20 koleksi sekaligus (cara ke-3 mengatasi N+1)
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG

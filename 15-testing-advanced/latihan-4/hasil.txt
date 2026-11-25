@@ -1,0 +1,21 @@
+PesananServiceTest
+  LULUS  fake_buat_dbMati_notifikasiTidakTerkirim
+  LULUS  fake_buat_itemKosong_ditolak
+  LULUS  fake_buat_itemTersimpanDanNotifikasiTerkirim
+  LULUS  mock_buat_gagalSimpan_tidakMengirimNotifikasi
+  LULUS  mock_buat_menyimpanLaluMengirimNotifikasi
+  LULUS  mock_hargaRupiah_memakaiStubKurs
+Ringkasan: 6 lulus, 0 gagal
+
+== Implementasi V1 (awal) ==
+RefaktorTest
+  LULUS  fake_itemSamaDuaKali_hanyaTersimpanSekali_V2
+  LULUS  fake_memeriksaHasil
+  LULUS  mock_terikatImplementasi_urutanPanggilanPersis
+Ringkasan: 3 lulus, 0 gagal
+== Implementasi V2 (setelah refaktor) ==
+RefaktorTest
+  LULUS  fake_itemSamaDuaKali_hanyaTersimpanSekali_V2
+  LULUS  fake_memeriksaHasil
+  GAGAL  mock_terikatImplementasi_urutanPanggilanPersis -> diharapkan <[simpan[kopi]]> tetapi aktual <[ada[kopi], simpan[kopi]]>
+Ringkasan: 2 lulus, 1 gagal

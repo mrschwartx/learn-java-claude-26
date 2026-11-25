@@ -1,0 +1,16 @@
+DiskonServiceTest
+  LULUS  akhirPekan_diskon10Persen
+  LULUS  batasZona_jumatMalamUTC_sudahSabtuDiJakarta
+  LULUS  hariKerja_tanpaDiskon
+  LULUS  jumat_hargaPenuh
+  LULUS  jumat_pagi_dan_sore_sama
+  GAGAL  sengajaGagal_ekspektasiSalah -> diharapkan <85000> tetapi aktual <90000>
+PesananServiceTest
+  LULUS  buat_itemKosong_melemparException
+  LULUS  buat_mengirimNotifikasi
+Ringkasan: 7 lulus, 1 gagal (1 gagal disengaja: sengajaGagal_ekspektasiSalah)
+
+== Kontras: DiskonServiceBuruk memakai LocalDate.now() langsung ==
+[BERVARIASI] hari ini: WEDNESDAY; hitung(100000) = 100000
+[BERVARIASI] test 'hariKerja_tanpaDiskon' versi buruk akan LULUS hari ini, dan hasilnya berubah bila dijalankan di akhir pekan
+Versi ber-Clock memberi hasil SAMA kapan pun dijalankan (lihat DiskonServiceTest di atas).

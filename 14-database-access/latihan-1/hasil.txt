@@ -1,0 +1,18 @@
+== 1. Pelanggan, jumlah pesanan, total belanja ==
+  Ani      Bandung  2 pesanan  Rp125,000
+  Dewi     Bandung  1 pesanan  Rp120,000
+  Candra   Jakarta  1 pesanan  Rp20,000
+  Eka      Medan    0 pesanan  Rp0
+  (Eka tanpa pesanan tetap tampil karena LEFT JOIN; INNER JOIN akan menghilangkannya)
+
+== 2. Per kota dengan parameter (PreparedStatement) ==
+  Dewi     Rp120,000
+  Ani      Rp75,000
+  Ani      Rp50,000
+
+== 3. SQL injection: input berbahaya  x' OR '1'='1 ==
+  SQL hasil rakitan : SELECT nama FROM pelanggan WHERE nama = 'x' OR '1'='1'
+  Konkatenasi mengembalikan : 4 baris (SEMUA pelanggan bocor)
+  PreparedStatement mengembalikan : 0 baris (dicari literal nama itu)
+  Konkatenasi dengan '1; DROP TABLE korban; --' -> tabel korban masih ada? false
+  PreparedStatement dengan nilai yang sama -> ditolak server (nilai bukan bilangan bulat) (SQLState 22P02), tidak ada yang dieksekusi

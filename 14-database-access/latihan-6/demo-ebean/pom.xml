@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TIDAK DIJALANKAN: butuh Maven Central. Versi Ebean sengaja tidak dikunci (ikuti materi): isi dari ebean.io. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.contoh</groupId>
+  <artifactId>demo-ebean</artifactId>
+  <version>1.0.0</version>
+  <properties>
+    <maven.compiler.release>21</maven.compiler.release>
+    <ebean.version><!-- isi dengan versi terbaru --></ebean.version>
+  </properties>
+  <dependencies>
+    <dependency><groupId>io.ebean</groupId><artifactId>ebean-postgres</artifactId><version>${ebean.version}</version></dependency>
+    <dependency><groupId>io.ebean</groupId><artifactId>ebean-querybean</artifactId><version>${ebean.version}</version></dependency>
+    <dependency><groupId>io.ebean</groupId><artifactId>querybean-generator</artifactId><version>${ebean.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>org.postgresql</groupId><artifactId>postgresql</artifactId><scope>runtime</scope></dependency>
+    <dependency><groupId>ch.qos.logback</groupId><artifactId>logback-classic</artifactId></dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.ebean</groupId><artifactId>ebean-maven-plugin</artifactId><version><!-- versi terbaru --></version>
+        <executions><execution><phase>process-classes</phase><configuration><transformArgs>debug=1</transformArgs></configuration><goals><goal>enhance</goal></goals></execution></executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS produk;
+CREATE TABLE produk (
+    id    BIGSERIAL PRIMARY KEY,
+    nama  VARCHAR(100) NOT NULL,
+    harga BIGINT NOT NULL CHECK (harga > 0)
+);

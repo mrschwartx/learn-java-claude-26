@@ -1,0 +1,12 @@
+== (a) ALTER TABLE + isi email ==
+  baris diubah: 1
+  Ani -> ani@contoh.id
+  Candra -> null
+  Dewi -> null
+
+== (b) Pelanggan dengan TOTAL pesanan > 100.000 (SQL setara dengan agregasi Ebean) ==
+  Ani      Rp125,000
+  Dewi     Rp120,000
+
+== Pesanan tunggal > 100.000 (setara  new QPesanan().total.gt(100_000)  ) ==
+  Dewi     Rp120,000

@@ -1,0 +1,9 @@
+ProdukApiTest
+  LULUS  get_tidakDidukung_405
+  LULUS  post_tidakValid_400_dan_tidakAdaBarisBaru[{"nama":"","harga":-5}|2]
+  LULUS  post_tidakValid_400_dan_tidakAdaBarisBaru[{"nama":"","harga":100}|1]
+  LULUS  post_tidakValid_400_dan_tidakAdaBarisBaru[{"nama":"Teh","harga":0}|1]
+  LULUS  post_tidakValid_400_dan_tidakAdaBarisBaru[{"harga":100}|1]
+  LULUS  post_valid_201_location_dan_tersimpanDiDatabase
+  LULUS  skema_menolakHargaNegatif_langsungDiDatabase
+Ringkasan: 7 lulus, 0 gagal

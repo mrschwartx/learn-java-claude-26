@@ -1,0 +1,28 @@
+  [Awal] Andi=500000  Budi=100000  | total=600000 | baris riwayat=0
+
+== A. Transfer sukses: Andi -> Budi 150.000 (saldo + riwayat dalam satu transaksi) ==
+  [Sesudah A] Andi=350000  Budi=250000  | total=600000 | baris riwayat=1
+
+== B. Saldo tidak cukup: Budi -> Andi 9.999.999 ==
+  Dibatalkan: saldo rekening 2 tidak cukup
+  [Sesudah B (tidak berubah)] Andi=350000  Budi=250000  | total=600000 | baris riwayat=1
+
+== C. Kegagalan SETELAH UPDATE pertama, DENGAN transaksi -> rollback ==
+  Dibatalkan: kegagalan simulasi setelah UPDATE pertama
+  [Sesudah C (tidak berubah: UPDATE pertama dibatalkan)] Andi=350000  Budi=250000  | total=600000 | baris riwayat=1
+
+== D. Kegagalan yang sama TANPA transaksi (autocommit) -> uang hilang ==
+  Gagal: kegagalan simulasi setelah UPDATE pertama
+  [Sesudah D (Andi berkurang 50.000, Budi tidak bertambah: data RUSAK)] Andi=300000  Budi=250000  | total=550000 | baris riwayat=1
+--- bukti dari psql (sesi terpisah):
+ pemilik | saldo  
+---------+--------
+ Andi    | 300000
+ Budi    | 250000
+(2 rows)
+
+ dari | ke | jumlah 
+------+----+--------
+    1 |  2 | 150000
+(1 row)
+

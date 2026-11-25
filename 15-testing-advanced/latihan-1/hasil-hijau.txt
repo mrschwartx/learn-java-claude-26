@@ -1,0 +1,12 @@
+PasswordTest
+  LULUS  kuat_beragamKasus[Abcdef12|true]
+  LULUS  kuat_beragamKasus[Abcdef1|false]
+  LULUS  kuat_beragamKasus[abcdefg1|false]
+  LULUS  kuat_beragamKasus[ABCDEFG1|false]
+  LULUS  kuat_beragamKasus[Abcdefgh|false]
+  LULUS  kuat_beragamKasus[Pa55w0rdYangPanjang|true]
+  LULUS  kuat_beragamKasus[12345678|false]
+  LULUS  kuat_beragamKasus[Abc 1234|true]
+  LULUS  kuat_beragamKasus[|false]
+  LULUS  kuat_null_ditolakTanpaException
+Ringkasan: 10 lulus, 0 gagal

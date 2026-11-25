@@ -1,0 +1,50 @@
+== 1. Suite KUAT pada kode ASLI materi Modul 4 ==
+RekeningBankTest
+  LULUS  jumlahRekening_bertambahSetiapDibuat
+  LULUS  konstruktorTanpaSaldoAwal_mulaiDariNol
+  LULUS  setor_menambahSaldo
+  LULUS  setor_nolAtauNegatif_melempar[-1]
+  LULUS  setor_nolAtauNegatif_melempar[0]
+  LULUS  setor_nolAtauNegatif_melempar[-1000]
+  LULUS  tarik_mengurangiSaldo
+  GAGAL  tarik_nolAtauNegatif_melempar[-50] -> diharapkan IllegalArgumentException tetapi tidak ada exception
+  GAGAL  tarik_nolAtauNegatif_melempar[0] -> diharapkan IllegalArgumentException tetapi tidak ada exception
+  LULUS  tarik_saldoTidakCukup_saldoTetapDanPesanDicetak
+  LULUS  tarik_tepatSebesarSaldo_diizinkan
+  LULUS  toString_memuatNomorPemilikDanSaldo
+Ringkasan: 10 lulus, 2 gagal
+  -> temuan: tarik(-50) dan tarik(0) tidak ditolak; tarik(-50) bahkan MENAMBAH saldo (bug pada kode materi)
+
+== 2. Suite KUAT pada kode PERBAIKAN (tarik menolak jumlah <= 0) ==
+RekeningBankTest
+  LULUS  jumlahRekening_bertambahSetiapDibuat
+  LULUS  konstruktorTanpaSaldoAwal_mulaiDariNol
+  LULUS  setor_menambahSaldo
+  LULUS  setor_nolAtauNegatif_melempar[-1]
+  LULUS  setor_nolAtauNegatif_melempar[0]
+  LULUS  setor_nolAtauNegatif_melempar[-1000]
+  LULUS  tarik_mengurangiSaldo
+  LULUS  tarik_nolAtauNegatif_melempar[-50]
+  LULUS  tarik_nolAtauNegatif_melempar[0]
+  LULUS  tarik_saldoTidakCukup_saldoTetapDanPesanDicetak
+  LULUS  tarik_tepatSebesarSaldo_diizinkan
+  LULUS  toString_memuatNomorPemilikDanSaldo
+Ringkasan: 12 lulus, 0 gagal
+
+== 3. Cakupan baris (instrumentasi sederhana pada kode perbaikan) ==
+Saldo tidak cukup untuk A
+  RekeningBankLemahTest    : 11 dari 11 baris pernyataan dieksekusi (100%)
+  RekeningBankTest         : 11 dari 11 baris pernyataan dieksekusi (100%)
+  Catatan: baris `if (...) throw ...;` dihitung 'kena' walau throw tidak pernah dieksekusi: cakupan baris bukan cakupan cabang.
+
+== 4. Mutation testing mini (mutan dibuat dari kode perbaikan; baseline suite KUAT harus hijau) ==
+  Mutan                                                          LEMAH    KUAT    
+  M1 setor: `jumlah <= 0` -> `jumlah < 0` (batas)                HIDUP    MATI    
+  M2 setor: `saldo += jumlah` -> `saldo -= jumlah`               HIDUP    MATI    
+  M3 tarik: `jumlah > saldo` -> `jumlah >= saldo` (batas)        HIDUP    MATI    
+  M4 tarik: `saldo -= jumlah` -> `saldo += jumlah`               HIDUP    MATI    
+  M5 tarik: hapus `return;` setelah pesan                        HIDUP    MATI    
+  M6 tarik: `jumlah <= 0` -> `jumlah < 0` (batas)                HIDUP    MATI    
+  M7 tarik: hapus pesan saldo tidak cukup                        HIDUP    MATI    
+  Skor mutasi (mutan MATI / total): LEMAH 0/7, KUAT 7/7
+  MATI = test gagal saat kode diubah (test menangkap perubahan); HIDUP = perubahan lolos tak terdeteksi.

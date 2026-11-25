@@ -1,0 +1,13 @@
+== A. Optimistic locking: dua transaksi membaca pelanggan yang sama (versi 0) ==
+  T1 dan T2 sama-sama membaca: Baca[id=1, nama=Ani, versi=0]
+  T1 mengubah nama -> commit sukses (versi menjadi 1)
+  T2 GAGAL: data sudah diubah transaksi lain (versi dibaca=0)  <- analog OptimisticLockException
+  Hasil akhir: Baca[id=1, nama=Ani Lestari, versi=1]  (perubahan T1 tidak tertimpa)
+
+== B. Tanpa versi (last-write-wins): update buta menimpa diam-diam ==
+  Nama sekarang: Ani Wijaya  (perubahan T1 'Ani Lestari' hilang tanpa error)
+
+== C. Pessimistic locking: SELECT ... FOR UPDATE menahan baris ==
+  T1 mengunci baris id=1 (FOR UPDATE)
+  T2 (NOWAIT) langsung ditolak: SQLState 55P03 - could not obtain lock on row in relation "pelanggan_v"
+  Setelah T1 commit (kunci dilepas), T2 berhasil mengunci
