@@ -1,0 +1,4 @@
+Salah.java:7: error: static methods cannot be annotated with @Override
+    @Override
+    ^
+1 error

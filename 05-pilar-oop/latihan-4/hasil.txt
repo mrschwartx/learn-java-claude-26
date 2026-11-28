@@ -1,0 +1,15 @@
+== Uang (equals + hashCode) ==
+a == b           : false
+a.equals(b)      : true
+a.equals(c)      : false
+a.hashCode()==b.hashCode() : true
+a.equals(null)   : false
+toString         : IDR 50000
+HashSet berisi 2 elemen (a dan b dianggap satu, c elemen terpisah)
+set.contains(new Uang(50_000, "IDR")) : true
+
+== UangRusak (equals saja, hashCode dihapus) ==
+ra.equals(rb)    : true   <- equals bilang SAMA
+hashCode sama?   : false  <- tapi hashCode berbeda (berbasis identitas)
+HashSet berisi 2 elemen  <- seharusnya 1
+rusak.contains(new UangRusak(50_000, "IDR")) : false  <- seharusnya true

@@ -1,0 +1,5 @@
+Andi   KaryawanTetap    Rp   9.500.000
+Budi   KaryawanKontrak  Rp   9.000.000
+Citra  KaryawanTetap    Rp  11.500.000
+Dewi   KaryawanKontrak  Rp   7.200.000
+Total gaji              Rp  37.200.000

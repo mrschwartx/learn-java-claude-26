@@ -1,0 +1,5 @@
+Benar    : MobilLama{Toyota Avanza, warna=Putih, 2022, Manual, 4 pintu}
+Tertukar : MobilLama{Toyota Putih, warna=Avanza, 2022, Manual, 4 pintu}   <- lolos kompilasi, datanya salah
+Builder  : Mobil{Toyota Avanza, warna=Putih, 2022, Manual, 4 pintu}
+Minimal  : Mobil{Honda Brio, warna=Putih, 2024, Manual, 4 pintu}
+Ditolak  : jumlahPintu harus 2..5, bukan 0

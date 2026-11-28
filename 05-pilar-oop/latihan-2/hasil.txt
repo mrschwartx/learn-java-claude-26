@@ -1,0 +1,8 @@
+-- method static (hiding) --
+info() milik Hewan
+info() milik Anjing
+info() milik Hewan
+info() milik Anjing
+
+-- method instance (overriding), sebagai pembanding --
+Anjing: guk guk

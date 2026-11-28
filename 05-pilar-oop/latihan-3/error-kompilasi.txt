@@ -1,0 +1,5 @@
+BebekTanpaOverride.java:5: error: types Terbang and Berenang are incompatible;
+class Bebek implements Terbang, Berenang { }
+^
+  class Bebek inherits unrelated defaults for bergerak() from types Terbang and Berenang
+1 error
